@@ -3,7 +3,7 @@ require("./conn.php");
 $id = $_GET["id"];
 $stmt = $conn->prepare("SELECT * FROM db_kendaraan WHERE id = :id");
 $stmt->execute([":id" => $id]);
-$data = $stmt->fetch(PDO::FETCH_ASSOC);
+$data = $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -136,10 +136,12 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <label class="input-group-text" for="inputGroupFile"><span class="mr-2">
                                 <i class="fa-solid fa-upload" style="color: #0352a3;"></i>
                             </span>Upload Foto</label>
-                        <input type="file" class="form-control" id="inputGroupFile" name="foto_mobil"
-                            value="<?= $data['foto'] ?>" required>
+                        <input type="file" class="form-control" id="inputGroupFile" name="foto_mobil">
                     </div>
                     <div class="col-4 col-lg-2 mb-3">
+                        <img id="preview" src="upload_foto/<?= $data['foto']; ?>" class="w-100">
+                    </div>
+                    <div class="col-4 col-lg-2">
                         <button type="submit" class="submit-btn btn btn-primary w-100">Save</button>
                     </div>
                 </form>
@@ -211,8 +213,8 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         cache: false,
                         processData: false
                     }).done((data) => {
+                        $('.submit-btn').html('Confirm');
                         if (!data.success) {
-                            $('.submit-btn').html('Confirm');
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed!!',
@@ -232,19 +234,20 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             })
         })
     })
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+    $("#inputGroupFile").on("change", function () {
+        const selectedImage = this.files[0];
 
-            reader.onload = function (e) {
-                $('#blah').attr('src', e.target.result);
-            }
+        if (selectedImage) {
+            const reader = new FileReader();
 
-            reader.readAsDataURL(input.files[0]);
+            reader.onload = function () {
+                $("#preview").attr("src", reader.result);
+            };
+
+            reader.readAsDataURL(selectedImage);
+        } else {
+            $("#preview").attr("src", "");
         }
-    }
-    $("#inputGroupFile").change(function () {
-        readURL(this);
     });
 </script>
 

@@ -131,6 +131,9 @@ require("./conn.php");
                         <input type="file" class="form-control" id="inputGroupFile" name="foto_mobil" required>
                     </div>
                     <div class="col-4 col-lg-2 mb-3">
+                        <img id="preview" src="" class="w-100">
+                    </div>
+                    <div class="col-4 col-lg-2">
                         <button type="submit" class="submit-btn btn btn-primary w-100">Confirm</button>
                     </div>
                 </form>
@@ -202,8 +205,8 @@ require("./conn.php");
                         cache: false,
                         processData: false
                     }).done((data) => {
+                        $('.submit-btn').html('Confirm');
                         if (!data.success) {
-                            $('.submit-btn').html('Confirm');
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Failed!!',
@@ -223,13 +226,21 @@ require("./conn.php");
             })
         })
     })
-    // var loadFile = function (event) {
-    //     var output = document.getElementById('output');
-    //     output.src = URL.createObjectURL(event.target.files[0]);
-    //     output.onload = function () {
-    //         URL.revokeObjectURL(output.src) // free memory
-    //     }
-    // };
+    $("#inputGroupFile").on("change", function () {
+        const selectedImage = this.files[0];
+
+        if (selectedImage) {
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                $("#preview").attr("src", reader.result);
+            };
+
+            reader.readAsDataURL(selectedImage);
+        } else {
+            $("#preview").attr("src", "");
+        }
+    });
 </script>
 
 </html>

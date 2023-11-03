@@ -28,8 +28,16 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         die(json_encode($data));
     }
     if ($errorFile === 4) {
-        $data['pesan'] = "Foto Mobil harus diisi!!";
-        die(json_encode($data));
+        $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `jenis_mobil`=:jenis,`plat_mobil`=:plat,`rfid_tag`=:rfid,`driver`=:driver,`murid`=:murid WHERE id = :id");
+        $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":id" => $id]);
+        if ($stmt->rowCount() > 0) {
+            $data['pesan'] = "Berhasil mengupdate Database";
+            $data['success'] = true;
+            die(json_encode($data));
+        } else {
+            $data['pesan'] = "Tidak ada data yang diupdate!";
+            die(json_encode($data));
+        }
     }
     if (in_array(strtolower(end($namaFile)), $allowed_foto)) {
         if ($sizeFile > 5_000_000) {

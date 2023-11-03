@@ -213,7 +213,6 @@ require("./conn.php");
         });
     })
     function viewFoto(url) {
-        console.log("hey")
         var modal = document.getElementById("myModal");
         var modalImg = document.getElementById("modalImage");
         modal.style.display = "block";
