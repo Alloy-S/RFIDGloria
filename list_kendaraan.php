@@ -26,9 +26,9 @@ require("./conn.php");
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
     <!-- font awesome  -->
     <link rel="stylesheet" href="./vendor/fontawesome-free.6.4.2-web/css/all.min.css">
     <style>
@@ -203,8 +203,8 @@ require("./conn.php");
                 {
                     'data': "id",
                     "render": function (data, type, row, meta) {
-                        return `<a href = ./edit_kendaraan.php?id=${data}><button type="button" class="btn btn-primary"><span class="mr-2"><i class="fa-regular fa-pen-to-square" style="color: #ffffff;"></i></span>Edit
-                            </button></a> <button type="button" class="btn btn-warning" onclick="deleteKendaraan(${data})"><span class="mr-2"><i class="fa-solid fa-trash" style="color: #ffffff;"></i></span>Delete
+                        return `<a href = ./edit_kendaraan.php?id=${data}><button type="button" class="btn btn-primary"><span class="mr-2"><i class="fas fa-edit" style="color: #ffffff;"></i></span>Edit
+                            </button></a> <button type="button" class="btn btn-warning" onclick="deleteKendaraan(${data})"><span class="mr-2"><i class="fas fa-trash" style="color: #ffffff;"></i></span>Delete
                             </button>`;
 
                     }

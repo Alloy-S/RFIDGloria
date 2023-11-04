@@ -110,7 +110,7 @@ require("./conn.php");
                     </div>
                     <div class="col-12 mb-3">
                         <label for="rfid_tag" class="form-label">RFID Tag</label>
-                        <input type="text" class="form-control" id="rfid_tag" name="rfid" disabled>
+                        <input type="text" class="form-control" id="rfid_tag" name="rfid" readonly>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="driver" class="form-label">Driver</label>
@@ -231,6 +231,8 @@ require("./conn.php");
                 $("#rfid_tag").val(res);
             }
         });
+
+        console.log($("#rfid_tag").val())
     }, 1000);
 
     $("#inputGroupFile").on("change", function() {
