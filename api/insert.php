@@ -1,5 +1,5 @@
 <?php
-require_once("./conn.php");
+require_once("../conn.php");
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $uid = $_POST['uid'];
@@ -17,3 +17,5 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     
     echo "New record created successfully";
 }
+
+
