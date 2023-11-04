@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $data['pesan'] = "Size image maximal 5MB!!";
             die(json_encode($data));
         }
-        $namabukti = $rfid . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
+        $namabukti = $plat . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
         $fileDestination = "../upload_foto/" . $namabukti;
         if (!(move_uploaded_file($penyimpananFile, $fileDestination))) {
             $data['pesan'] = "Maaf ada kesalahan, silahkan tunggu beberapa saat";

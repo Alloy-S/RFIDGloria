@@ -164,7 +164,7 @@ require("./conn.php");
         var table = $('#dataMobil').DataTable({
             ajax: "./api/dataMobil.php",
             method: "GET",
-            order: ([1, 'asc']),
+            order: ([0, 'asc']),
             dataSrc: "data",
             columnDefs: [
                 { "width": "14%", "targets": 7 },
