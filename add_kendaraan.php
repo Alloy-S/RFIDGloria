@@ -18,16 +18,12 @@ require("./conn.php");
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- font awesome  -->
     <link rel="stylesheet" href="./vendor/fontawesome-free.6.4.2-web/css/all.min.css">
     <!-- Sweet Alert -->
@@ -114,7 +110,7 @@ require("./conn.php");
                     </div>
                     <div class="col-12 mb-3">
                         <label for="rfid_tag" class="form-label">RFID Tag</label>
-                        <input type="text" class="form-control" id="rfid_tag" name="rfid" required>
+                        <input type="text" class="form-control" id="rfid_tag" name="rfid" disabled>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="driver" class="form-label">Driver</label>
@@ -182,8 +178,8 @@ require("./conn.php");
 </body>
 
 <script>
-    $(document).ready(function () {
-        $("#submit-kendaraan").on("submit", function (e) {
+    $(document).ready(function() {
+        $("#submit-kendaraan").on("submit", function(e) {
             e.preventDefault();
             Swal.fire({
                 title: 'Are you sure?',
@@ -226,13 +222,24 @@ require("./conn.php");
             })
         })
     })
-    $("#inputGroupFile").on("change", function () {
+
+    setInterval(function() {
+        $.ajax({
+            url: "./api/getUID.php",
+            type: 'GET',
+            success: function(res) {
+                $("#rfid_tag").val(res);
+            }
+        });
+    }, 1000);
+
+    $("#inputGroupFile").on("change", function() {
         const selectedImage = this.files[0];
 
         if (selectedImage) {
             const reader = new FileReader();
 
-            reader.onload = function () {
+            reader.onload = function() {
                 $("#preview").attr("src", reader.result);
             };
 

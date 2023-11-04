@@ -30,6 +30,11 @@ $rows = $stmt->fetchAll();
         .logo-gloria {
             border-radius: 50%;
         }
+
+        .table th {
+            background-color: #0352A3;
+            color: #FFFFFF;
+        }
     </style>
 
 </head>
