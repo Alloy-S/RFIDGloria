@@ -40,7 +40,7 @@
             background-color: #0352A3;
             color: #FFFFFF;
         }
-
+        
         .header-footer {
             color: white;
             margin: 0;
@@ -81,7 +81,7 @@
                             <img src="./img/logo.jpg" alt="" width="40" class="logo-gloria">
                         </div>
                     </a>
-                    <h2 class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
+                    <h2 style="font-size:3em;font-weight:bold" class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
                 </header>
 
                 <!-- Begin Page Content -->
@@ -109,7 +109,7 @@
                 <!-- footer -->
                 <footer class="row col-lg-12 bg-gradient-primary justify-content-center header-footer sticky-bottom" id="footer">
                     <div class="container">
-                        <div class="copyright text-center my-5">
+                        <div class="copyright text-center my-4">
                             <span>Copyright &copy; IT PCU 2023</span>
                         </div>
                     </div>

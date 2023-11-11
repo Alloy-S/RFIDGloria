@@ -64,7 +64,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-3 mt-4 text-gray-800">Riwayat Penjemputan</h1>
+                    <h1 style="color:#0352A3;font-size:3em;font-weight:bold" class="h3 mb-3 my-5 text-center">Riwayat Penjemputan</h1>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
