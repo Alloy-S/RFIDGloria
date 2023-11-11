@@ -6,6 +6,13 @@ if (isset($_POST['submit'])) {
     $username = htmlspecialchars($_POST['username']);
     $password = htmlspecialchars($_POST['password']);
 
+    // Check if username and password are not empty
+    if (empty($username) || empty($password)) {
+        $_SESSION['login_error'] = "Username and password are required.";
+        header("location: ../login.php");
+        exit();
+    }
+
     $stmt = $conn->prepare("SELECT * FROM user WHERE username=:username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
@@ -20,12 +27,12 @@ if (isset($_POST['submit'])) {
             $_SESSION['admin'] = true;
             header("location: ../index.php");
         } else {
-            $_SESSION['login_error'] = "Username/Password salah";
+            $_SESSION['login_error'] = "Username or password is incorrect";
             header("location: ../login.php");
             exit();
         }
     } else {
-        $_SESSION['login_error'] = "Username/Password salah";
+        $_SESSION['login_error'] = "Username or password is incorrect";
         header("location: ../login.php");
         exit();
     }
