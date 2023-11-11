@@ -44,6 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `murid`, `foto`) VALUES (:jenis,:plat,:rfid,:driver,:murid,:foto)");
         $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":foto" => $namabukti]);
         if ($stmt->rowCount() > 0) {
+            $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
+            $stmt->execute([":newUID" => "", ":id" => 1]);
             $data['pesan'] = "Berhasil mendaftarkan Kendaraan";
             $data['success'] = true;
             die(json_encode($data));
@@ -55,7 +57,4 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $data['pesan'] = "Extension file harus berupa 'jpg', 'jpeg', 'png', 'heic' !!!";
         die(json_encode($data));
     }
-
 }
-
-?>
