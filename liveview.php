@@ -41,27 +41,25 @@
             color: #FFFFFF;
         }
 
-        .container-fluid {
-            position: absolute;
-            top: 50vh;
-            left: 50vw;
-            transform: translate(-50%, -50%);
-        }
-
-        body {
-            background-color: #68B3FF;
-        }
-
         .header-footer {
             color: white;
             margin: 0;
         }
 
-        #footer {
-            position: absolute;
-            bottom: 0;
-            left: 50vw;
+        .container-fluid {
+            margin: 0 50vw;
             transform: translate(-50%, 0);
+        }
+
+        #footer {
+            position: fixed;
+            bottom: 0; 
+        }
+
+        @media (max-width: 768px) {
+            #footer {
+                position: static;
+            }
         }
 
     </style>
@@ -82,41 +80,36 @@
             <div id="content">
 
                 <!-- header -->
-                <header class="row col-lg-12 bg-gradient-primary justify-content-center header-footer" id="header">
-                    <h1 class="m-5">Tabel Penjemputan Siswa/Siswi</h1>
+                <header class="row col-lg-12 bg-gradient-primary justify-content-center header-footer sticky-top" id="header">
+                    <h2 class="my-5">Tabel Penjemputan Siswa/Siswi</h1>
                 </header>
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
-
+                <div class="row container-fluid">
                     <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="dataHistory" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Name</th>
-                                            <th>Kendaraan</th>
-                                            <th>Plat No</th>
-                                            <th>Waktu Datang</th>
-                                            <th>Waktu Pergi</th>
-                                    </thead>
-                                    <tbody>
-                                        
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="d-flex card col-lg-12 shadow my-4">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataLiveview" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Kendaraan</th>
+                                        <th>Plat No</th>
+                                        <th>Status</th>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
 
-                <!-- header -->
-                <footer class="row col-lg-12 bg-gradient-primary justify-content-center header-footer" id="footer">
-                    <div class="container my-auto">
+                <!-- footer -->
+                <footer class="row col-lg-12 bg-gradient-primary justify-content-center header-footer sticky-bottom" id="footer">
+                    <div class="container">
                         <div class="copyright text-center my-5">
                             <span>Copyright &copy; IT PCU 2023</span>
                         </div>
@@ -156,35 +149,35 @@
 </body>
 
 <script>
-        $(document).ready(function() {
-            var table = $('#dataHistory').DataTable({
-                ajax: "./api/dataHistory.php",
-                method: "GET",
-                order: ([0, 'asc']),
-                dataSrc: "data",
-                columns: [{
-                        render: function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {
-                        'data': 'murid'
-                    },
-                    {
-                        'data': "jenis_mobil",
-                    },
-                    {
-                        'data': "plat_mobil",
-                    },
-                    {
-                        'data': "entry_date",
-                    },
-                    {
-                        'data': "exit_time"
+    $(document).ready(function() {
+        var table = $('#dataLiveview').DataTable({
+            ajax: "./api/dataLiveview.php",
+            method: "GET",
+            order: ([0, 'asc']),
+            dataSrc: "data",
+            columns: [{
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
                     }
-                ]
-            });
+                },
+                {
+                    'data': 'murid'
+                },
+                {
+                    'data': "jenis_mobil",
+                },
+                {
+                    'data': "plat_mobil",
+                },
+                {
+                    'data': "status",
+                }
+            ],
+            paging: false,
+            searching: false,
+            info: false
         });
-    </script>
+    });
+</script>
 
 </html>

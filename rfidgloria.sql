@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2023 at 09:55 AM
+-- Generation Time: Nov 11, 2023 at 01:00 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -42,8 +42,8 @@ CREATE TABLE `db_kendaraan` (
 --
 
 INSERT INTO `db_kendaraan` (`id`, `jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `murid`, `foto`) VALUES
-(4, 'Avanza', 'N 1675 UI', 'C14210151', 'Muhammad', 'Ericksen Julius', 'C142101512_6544a6fc730db6.59804373.png'),
-(5, 'Avanza', 'N 1632 IE', '#C1421098', 'Dukiman', 'Poatan', 'C1421098_6544a3da7182e2.98987083.png'),
+(4, 'Avanza', 'N 1675 UI', '50:b7:e4:a4:', 'Muhammad', 'Ericksen Julius', 'C142101512_6544a6fc730db6.59804373.png'),
+(5, 'Avanza', 'N 1632 IE', 'd2:8e:50:96:', 'Dukiman', 'Poatan', 'C1421098_6544a3da7182e2.98987083.png'),
 (6, 'Veloz', 'N 1678 IO', 'C5682738', 'Tukiman', 'Derick', 'C5682738_6544a89019f7c3.70769303.png');
 
 -- --------------------------------------------------------
@@ -69,7 +69,7 @@ INSERT INTO `history` (`id`, `UID`, `entry_date`, `exit_time`) VALUES
 (55, '50:b7:e4:a4:', '2023-10-22 00:00:00', NULL),
 (56, 'd2:8e:50:96:', '2023-10-22 21:27:19', NULL),
 (57, '50:b7:e4:a4:', '2023-10-22 21:27:26', NULL),
-(58, 'd2:8e:50:96:', '2023-10-22 21:54:01', NULL),
+(58, 'd2:8e:50:96:', '2023-10-22 21:54:01', '2023-01-11 18:58:07'),
 (59, '50:b7:e4:a4:', '2023-10-22 21:54:05', NULL),
 (60, 'd2:8e:50:96:', '2023-10-22 21:54:15', NULL),
 (61, 'ghjkgfaukgf', '2023-11-03 23:17:25', NULL),
@@ -150,7 +150,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `db_kendaraan`
 --
 ALTER TABLE `db_kendaraan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `history`
