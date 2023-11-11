@@ -81,15 +81,15 @@ require_once('./conn.php');
                         <div class="p-5">
                             <div class="text-center">
                                 <img class="col my-5" src="img/icon-profile-login.png" alt="icon profile login">
-                                <h1 class="h1 mb-4">WELCOME</h1>
+                                <h1 style="font-size:3em;font-weight:bold" class="h1 mb-4">WELCOME</h1>
                             </div>
                             <form class="user my-5" method="POST" action="api/login.php">
                                 <div class="form-group mb-4">
-                                    <label for="username">Username</label>
+                                    <label style="font-weight:bold" for="username">Username</label>
                                     <input type="text" class="mb-4" id="username" name="username">
                                 </div>
                                 <div class="form-group mb-4">
-                                    <label for="password">Password</label>
+                                    <label style="font-weight:bold" for="password">Password</label>
                                     <input type="password" class="mb-4" id="password" name="password">
                                 </div>
 
@@ -99,7 +99,7 @@ require_once('./conn.php');
                                 </div> -->
 
                                 <div class="form-group my-4">
-                                    <button class="btn btn-warning btn-lg btn-block my-5" name="submit" type="submit">
+                                    <button style="font-weight:bold" class="btn btn-warning btn-lg btn-block my-5" name="submit" type="submit">
                                         LOGIN
                                     </button>
                                 </div>
