@@ -62,7 +62,7 @@
 
     <!-- Nav Item - Tables -->
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="./liveview.php" target="_blank">
             <i class="fas fa-fw fa-table"></i>
             <span>Live View</span></a>
     </li>

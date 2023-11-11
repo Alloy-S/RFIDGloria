@@ -30,8 +30,8 @@ require_once('./conn.php');
 
         .container {
             position: absolute;
-            margin: 50vh 50vw;
-            transform: translate(-50%, -50%);
+            margin: 0 50vw;
+            transform: translate(-50%, 0);
         }
 
         .form-group input {
@@ -80,7 +80,7 @@ require_once('./conn.php');
                     <div class="col-lg-6">
                         <div class="p-5">
                             <div class="text-center">
-                                <img class="col mb-4" src="img/icon-profile-login.png" alt="icon profile login">
+                                <img class="col my-5" src="img/icon-profile-login.png" alt="icon profile login">
                                 <h1 class="h1 mb-4">WELCOME</h1>
                             </div>
                             <form class="user my-5" method="POST" action="api/login.php">

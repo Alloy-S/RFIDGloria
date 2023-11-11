@@ -18,7 +18,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Gloria Admin </title>
+    <title>Liveview</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -31,6 +31,7 @@
     <!-- JQUERY -->
     <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
     <style>
+
         .logo-gloria {
             border-radius: 50%;
         }
@@ -39,6 +40,30 @@
             background-color: #0352A3;
             color: #FFFFFF;
         }
+
+        .container-fluid {
+            position: absolute;
+            top: 50vh;
+            left: 50vw;
+            transform: translate(-50%, -50%);
+        }
+
+        body {
+            background-color: #68B3FF;
+        }
+
+        .header-footer {
+            color: white;
+            margin: 0;
+        }
+
+        #footer {
+            position: absolute;
+            bottom: 0;
+            left: 50vw;
+            transform: translate(-50%, 0);
+        }
+
     </style>
 
     
@@ -50,21 +75,19 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
-        <?php require "./sidebar.php"; ?>
-        <!-- End of Sidebar -->
-
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
             <div id="content">
 
+                <!-- header -->
+                <header class="row col-lg-12 bg-gradient-primary justify-content-center header-footer" id="header">
+                    <h1 class="m-5">Tabel Penjemputan Siswa/Siswi</h1>
+                </header>
+
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <h1 class="h3 mb-3 mt-4 text-gray-800">Riwayat Penjemputan</h1>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -91,18 +114,17 @@
                 </div>
                 <!-- /.container-fluid -->
 
+                <!-- header -->
+                <footer class="row col-lg-12 bg-gradient-primary justify-content-center header-footer" id="footer">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-5">
+                            <span>Copyright &copy; IT PCU 2023</span>
+                        </div>
+                    </div>
+                </footer>
+
             </div>
             <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; IT PCU 2023</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
 
         </div>
         <!-- End of Content Wrapper -->
