@@ -61,6 +61,11 @@ require_once('./conn.php');
             background-size: 100%;
         }
 
+        /* a, a:active, a:visited, a:hover {
+            color: white;
+            float: right;
+        } */
+
     </style>
 
 </head>
@@ -88,9 +93,16 @@ require_once('./conn.php');
                                     <input type="password" class="mb-4" id="password" name="password">
                                 </div>
 
-                                <button class="btn btn-warning btn-block my-5" name="submit" type="submit">
-                                    Login
-                                </button>
+                                <!-- Forgot Password
+                                <div class="text-right">
+                                    <a class="mb-4" href="forgot_password.php">Forgot Password?</a>
+                                </div> -->
+
+                                <div class="form-group my-4">
+                                    <button class="btn btn-warning btn-lg btn-block my-5" name="submit" type="submit">
+                                        LOGIN
+                                    </button>
+                                </div>
                             </form>
 
                             <?php
