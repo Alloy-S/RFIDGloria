@@ -1,3 +1,9 @@
+<?php
+require './session.php';
+require_once('./conn.php');
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
