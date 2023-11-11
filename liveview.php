@@ -46,11 +46,6 @@
             margin: 0;
         }
 
-        .container-fluid {
-            margin: 0 50vw;
-            transform: translate(-50%, 0);
-        }
-
         #footer {
             position: fixed;
             bottom: 0; 
@@ -81,15 +76,19 @@
 
                 <!-- header -->
                 <header class="row col-lg-12 bg-gradient-primary justify-content-center header-footer sticky-top" id="header">
-                    <h2 class="my-5">Tabel Penjemputan Siswa/Siswi</h1>
+                    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+                        <div class="sidebar-brand-icon m-4">
+                            <img src="./img/logo.jpg" alt="" width="40" class="logo-gloria">
+                        </div>
+                    </a>
+                    <h2 class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
                 </header>
 
                 <!-- Begin Page Content -->
-                <div class="row container-fluid">
-                    <!-- DataTales Example -->
-                    <div class="d-flex card col-lg-12 shadow my-4">
+                <div class="row container-fluid justify-content-center m-0">
+                    <div class="wd-flex card col-lg-12 apper-table m-4">
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="dataLiveview" width="100%" cellspacing="0">
+                            <table class="table table-striped" id="dataLiveview" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>No</th>
