@@ -148,40 +148,98 @@
 </body>
 
 <script>
-    $(document).ready(function() {
-        var table = $('#dataLiveview').DataTable({
-            ajax: "./api/dataLiveview.php",
-            method: "GET",
-            order: ([0, 'asc']),
-            dataSrc: "data",
-            columns: [{
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                },
-                {
-                    'data': 'murid'
-                },
-                {
-                    'data': "jenis_mobil",
-                },
-                {
-                    'data': "plat_mobil",
-                },
-                {
-                    'data': "status",
-                }
-            ],
-            paging: false,
-            searching: false,
-            info: false
-        });
+$(document).ready(function () {
+    var page = 1;
+    var total_pages = 1;
+    var lastPageChangeTime = new Date();
 
-        // Auto-refresh the DataTable continuously (1 second interval)
-        setInterval(function() {
-            table.ajax.reload(null, false); // Reload data without resetting current page
-        }, 1000);
+    var table = $('#dataLiveview').DataTable({
+        ajax: {
+            url: "./api/dataLiveview.php",
+            method: "GET",
+            data: function (d) {
+                // Send the current page as a parameter
+                d.page = page;
+            },
+            dataSrc: function (json) {
+                total_pages = json.total_pages;
+                return json.data;
+            }
+        },
+        order: ([0, 'asc']),
+        columns: [
+            {
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            {
+                'data': 'murid'
+            },
+            {
+                'data': "jenis_mobil",
+            },
+            {
+                'data': "plat_mobil",
+            },
+            {
+                'data': "status",
+            }
+        ],
+        paging: false,
+        searching: false,
+        info: false,
+        initComplete: function (settings, json) {
+            // Auto-refresh the DataTable continuously (1-second interval)
+            setInterval(function () {
+                console.log("Current Page:", page);
+
+                // Check if 10 seconds have passed since the last page change
+                var currentTime = new Date();
+                var timeDifference = currentTime - lastPageChangeTime;
+                
+                if (timeDifference >= 1000) {
+                    table.ajax.reload(null, false);
+                }
+                
+                if (timeDifference >= 10000) {
+                    // Add a fade-out effect before reloading
+                    $('#dataLiveview').fadeOut(300, function () {
+                        table.ajax.reload(null, false);
+                        table.ajax.reload(function () {
+                            // Log after reload
+                            console.log("Reloaded. Current Page:", page);
+                            // Add a fade-in effect after reloading
+                            $('#dataLiveview').fadeIn(300);
+                            table.ajax.reload(null, false);
+                        }, false);
+                    });
+
+                    // Update the last page change time
+                    lastPageChangeTime = new Date();
+                }
+            }, 1000);
+
+            // Change page every 10 seconds
+            setInterval(function () {
+                table.ajax.reload(null, false);
+                page++;
+                if (page > total_pages) {
+                    page = 1;
+                }
+            }, 10000);
+        }
     });
+});
+
+
+
+
+
+
+
+
+
 </script>
 
 </html>
