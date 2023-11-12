@@ -176,6 +176,11 @@
             searching: false,
             info: false
         });
+
+        // Auto-refresh the DataTable continuously (1 second interval)
+        setInterval(function() {
+            table.ajax.reload(null, false); // Reload data without resetting current page
+        }, 1000);
     });
 </script>
 
