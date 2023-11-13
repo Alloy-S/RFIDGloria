@@ -91,7 +91,7 @@
                             <table class="table table-striped" id="dataLiveview" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
+                                        <!-- <th>No</th> -->
                                         <th>Name</th>
                                         <th>Kendaraan</th>
                                         <th>Plat No</th>
@@ -148,95 +148,87 @@
 </body>
 
 <script>
-$(document).ready(function () {
-    var page = 1;
-    var total_pages = 1;
-    var lastPageChangeTime = new Date();
+    $(document).ready(function () {
+        var page = 1;
+        var total_pages = 1;
+        var lastPageChangeTime = new Date();
 
-    var table = $('#dataLiveview').DataTable({
-        ajax: {
-            url: "./api/dataLiveview.php",
-            method: "GET",
-            data: function (d) {
-                // Send the current page as a parameter
-                d.page = page;
-            },
-            dataSrc: function (json) {
-                total_pages = json.total_pages;
-                return json.data;
-            }
-        },
-        order: ([0, 'asc']),
-        columns: [
-            {
-                render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
+        var table = $('#dataLiveview').DataTable({
+            ajax: {
+                url: "./api/dataLiveview.php",
+                method: "GET",
+                data: function (d) {
+                    // Send the current page as a parameter
+                    d.page = page;
+                },
+                dataSrc: function (json) {
+                    total_pages = json.total_pages;
+                    return json.data;
                 }
             },
-            {
-                'data': 'murid'
-            },
-            {
-                'data': "jenis_mobil",
-            },
-            {
-                'data': "plat_mobil",
-            },
-            {
-                'data': "status",
-            }
-        ],
-        paging: false,
-        searching: false,
-        info: false,
-        initComplete: function (settings, json) {
-            // Auto-refresh the DataTable continuously (1-second interval)
-            setInterval(function () {
-                console.log("Current Page:", page);
-
-                var currentTime = new Date();
-                var timeDifference = currentTime - lastPageChangeTime;
-                
-                // 
-                if (timeDifference >= 1000) {
-                    table.ajax.reload(null, false);
+            order: ([0, 'asc']),
+            columns: [
+                // {
+                //     render: function (data, type, row, meta) {
+                //         return meta.row + meta.settings._iDisplayStart + 1;
+                //     }
+                // },
+                {
+                    'data': 'murid'
+                },
+                {
+                    'data': "jenis_mobil",
+                },
+                {
+                    'data': "plat_mobil",
+                },
+                {
+                    'data': "status",
                 }
-                
-                // Change page every 3 seconds & check if 10 seconds have passed since the last page change
-                if (timeDifference >= 3000) {
-                    // Add a fade-out effect before reloading
-                    $('#dataLiveview').fadeOut(300, function () {
+            ],
+            paging: false,
+            searching: false,
+            info: false,
+            initComplete: function (settings, json) {
+                // Auto-refresh the DataTable continuously (1-second interval)
+                setInterval(function () {
+                    console.log("Current Page:", page);
+
+                    var currentTime = new Date();
+                    var timeDifference = currentTime - lastPageChangeTime;
+                    
+                    // Auto-refresh data every 1 second
+                    if (timeDifference >= 1000) {
                         table.ajax.reload(null, false);
-                        table.ajax.reload(function () {
-                            // Log after reload
-                            console.log("Reloaded. Current Page:", page);
-                            // Add a fade-in effect after reloading
-                            $('#dataLiveview').fadeIn(300);
-                            table.ajax.reload(null, false);
-                        }, false);
-                    });
-
-                    page++;
-                    if (page > total_pages) {
-                        page = 1;
                     }
+                    
+                    // Change page every 3 seconds & check if 10 seconds have passed since the last page change
+                    if (timeDifference >= 3000) {
+                        // Add a fade-out effect before reloading
+                        $('#dataLiveview').fadeOut(300, function () {
+                            table.ajax.reload(null, false);
+                            table.ajax.reload(function () {
+                                // Log after reload
+                                console.log("Reloaded. Current Page:", page);
+                                // Add a fade-in effect after reloading
+                                $('#dataLiveview').fadeIn(300);
+                                table.ajax.reload(null, false);
+                            }, false);
+                        });
 
-                    // Update the last page change time
-                    lastPageChangeTime = new Date();
-                }
-            }, 1000);
+                        page++;
+                        if (page > total_pages) {
+                            page = 1;
+                        }
 
-        }
+                        // Update the last page change time
+                        lastPageChangeTime = new Date();
+                    }
+                }, 1000);
+
+            }
+        });
     });
-});
-
-
-
-
-
-
-
-
 
 </script>
 
