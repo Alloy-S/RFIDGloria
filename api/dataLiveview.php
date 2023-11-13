@@ -3,7 +3,7 @@ include("../conn.php");
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $limit = 10; 
+    $limit = 2; 
     $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 
     $offset = ($page - 1) * $limit;

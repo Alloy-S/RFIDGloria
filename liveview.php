@@ -194,15 +194,16 @@ $(document).ready(function () {
             setInterval(function () {
                 console.log("Current Page:", page);
 
-                // Check if 10 seconds have passed since the last page change
                 var currentTime = new Date();
                 var timeDifference = currentTime - lastPageChangeTime;
                 
+                // 
                 if (timeDifference >= 1000) {
                     table.ajax.reload(null, false);
                 }
                 
-                if (timeDifference >= 10000) {
+                // Change page every 3 seconds & check if 10 seconds have passed since the last page change
+                if (timeDifference >= 3000) {
                     // Add a fade-out effect before reloading
                     $('#dataLiveview').fadeOut(300, function () {
                         table.ajax.reload(null, false);
@@ -215,19 +216,16 @@ $(document).ready(function () {
                         }, false);
                     });
 
+                    page++;
+                    if (page > total_pages) {
+                        page = 1;
+                    }
+
                     // Update the last page change time
                     lastPageChangeTime = new Date();
                 }
             }, 1000);
 
-            // Change page every 10 seconds
-            setInterval(function () {
-                table.ajax.reload(null, false);
-                page++;
-                if (page > total_pages) {
-                    page = 1;
-                }
-            }, 10000);
         }
     });
 });
