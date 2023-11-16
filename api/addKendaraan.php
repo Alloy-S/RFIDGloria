@@ -41,11 +41,21 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $data['pesan'] = "Maaf ada kesalahan, silahkan tunggu beberapa saat";
             die(json_encode($data));
         }
-        $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `murid`, `foto`) VALUES (:jenis,:plat,:rfid,:driver,:murid,:foto)");
-        $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":foto" => $namabukti]);
+
+        $file = uniqid('', true) . "" . ".wav";
+        $text = "siswa " . $murid . " Kelas 11A telah di jemput. harap bersiap di lobby utara.";
+        $text = str_replace(" ", "+", $text);
+        $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
+        file_put_contents($file, $current);
+
+        $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `murid`, `foto`, 'sound') VALUES (:jenis,:plat,:rfid,:driver,:murid,:foto,:sound)");
+        $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":foto" => $namabukti, ":sound" => $file]);
         if ($stmt->rowCount() > 0) {
+            // rfid
             $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
             $stmt->execute([":newUID" => "", ":id" => 1]);
+
+
             $data['pesan'] = "Berhasil mendaftarkan Kendaraan";
             $data['success'] = true;
             die(json_encode($data));
