@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         die(json_encode($data));
     }
     if ($errorFile === 4) {
-        $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `jenis_mobil`=:jenis,`plat_mobil`=:plat,`rfid_tag`=:rfid,`driver`=:driver,`murid`=:murid WHERE id = :id");
+        $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `jenis_mobil`=:jenis,`plat_mobil`=:plat,`rfid_tag`=:rfid,`driver`=:driver,`id_murid`=:murid WHERE id = :id");
         $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":id" => $id]);
         if ($stmt->rowCount() > 0) {
             $data['pesan'] = "Berhasil mengupdate Database";
@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $data['pesan'] = "Maaf ada kesalahan, silahkan tunggu beberapa saat";
             die(json_encode($data));
         }
-        $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `jenis_mobil`=:jenis,`plat_mobil`=:plat,`rfid_tag`=:rfid,`driver`=:driver,`murid`=:murid,`foto`=:foto WHERE id = :id");
+        $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `jenis_mobil`=:jenis,`plat_mobil`=:plat,`rfid_tag`=:rfid,`driver`=:driver,`id_murid`=:murid,`foto`=:foto WHERE id = :id");
         $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":foto" => $namabukti, ":id" => $id]);
         if ($stmt->rowCount() > 0) {
             $data['pesan'] = "Berhasil mengupdate Database";
