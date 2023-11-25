@@ -1,9 +1,9 @@
 <?php
 require("./conn.php");
 $id = $_GET["id"];
-$stmt = $conn->prepare("SELECT * FROM db_kendaraan WHERE id = :id");
+$stmt = $conn->prepare("SELECT * FROM db_kendaraan AS A JOIN murid_to_kendaraan AS B ON A.id = B.id_kendaraan WHERE A.id = :id");
 $stmt->execute([":id" => $id]);
-$data = $stmt->fetch();
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -106,7 +106,7 @@ $data = $stmt->fetch();
                 <h1 style="color:#0352A3;font-size:3em;font-weight:bold">Edit Kendaraan</h1>
                 <form id="submit-edit-kendaraan" action="./api/editKendaraan.php" enctype="multipart/form-data"
                     method="POST">
-                    <input type="hidden" value="<?= $data['id'] ?>" name="id">
+                    <input type="hidden" value="<?= $data['id_kendaraan'] ?>" name="id">
                     <div class="col-12 mb-3">
                         <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
                         <input type="text" class="form-control" id="jenis_mobil" name="jenis"
@@ -128,8 +128,8 @@ $data = $stmt->fetch();
                             required>
                     </div>
                     <div class="col-12 mb-3">
-                        <label for="murid" class="form-label">Murid</label>
-                        <input type="text" class="form-control" id="murid" name="murid" value="<?= $data['murid'] ?>"
+                        <label for="murid" class="form-label">Id Murid</label>
+                        <input type="text" class="form-control" id="murid" name="murid" value="<?= $data['id_murid'] ?>"
                             required>
                     </div>
                     <div class="input-group custom-file-button col-12 mb-3">

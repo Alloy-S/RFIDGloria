@@ -120,7 +120,7 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
                         <input type="text" class="form-control" id="driver" name="driver" required>
                     </div>
                     <div class="col-12 mb-3">
-                        <label for="murid" class="form-label">Murid</label>
+                        <label for="murid" class="form-label">Id Murid</label>
                         <input type="text" class="form-control" id="murid" name="murid" required>
                     </div>
                     <div class="input-group custom-file-button col-12 mb-3">

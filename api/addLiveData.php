@@ -17,33 +17,36 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // echo "Current local time: $currentLocalTime\n";
 
     $uid = $_POST["uid"];
-    $stmt = $conn->prepare("SELECT b.grade from db_kendaraan AS a JOIN murid AS b ON a.id_murid = b.student_id WHERE a.rfid_tag = :id");
+    $stmt = $conn->prepare("SELECT c.grade from db_kendaraan AS a JOIN murid_to_kendaraan AS b ON a.id = b.id_kendaraan JOIN murid AS c ON b.id_murid = c.student_id WHERE a.rfid_tag = :id");
     $stmt->execute([":id" => $uid]);
-    $kelas = $stmt->fetch();
-    $kelas = $kelas[0];
+    $kelas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $kelas = $kelas[0];
     // echo ($kelas);
     // echo ($currentLocalTime >= $time4[0]);
-    $stmt = $conn->prepare("SELECT * FROM history WHERE entry_date BETWEEN concat(current_date(), ' 00:00:00') AND concat(current_date(), ' 23:59:59') AND UID=:uid");
-    $stmt->execute([":uid" => $randomUID]);
-    if($stmt->rowCount() < 1){
-        if($kelas >= 1 && $kelas <= 3){
+    // $stmt = $conn->prepare("SELECT * FROM history WHERE entry_date BETWEEN concat(current_date(), ' 00:00:00') AND concat(current_date(), ' 23:59:59') AND UID=:uid");
+    // $stmt->execute([":uid" => $randomUID]);
+    // if($stmt->rowCount() < 1){
+    foreach($kelas as $row){
+        $grade = $row['grade'];
+        if($grade >= 1 && $grade <= 3){
             if($currentLocalTime >= reset($time2) && $currentLocalTime <= end($time2)){
                 $valid = true;
             }
-        }else if($kelas >= 4 && $kelas <= 6){
+        }else if($grade >= 4 && $grade <= 6){
             if($currentLocalTime >= reset($time3) && $currentLocalTime <= end($time3)){
                 $valid = true;
             }
-        }else if($kelas >= 7 && $kelas <=9){
+        }else if($grade >= 7 && $grade <=9){
             if($currentLocalTime >= reset($time4) && $currentLocalTime <= end($time4)){
                 $valid = true;
             }
         }else{
             if($currentLocalTime >= reset($time1) && $currentLocalTime <= end($time1)){
                 $valid = true;
-            }
+                }
         }
     }
+
     if($valid){
         $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`) VALUES (:uid)");
         $stmt->execute([":uid" => $randomUID]);

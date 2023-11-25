@@ -5,7 +5,7 @@ include("../conn.php");
     $stmt = $conn->prepare("SELECT id,entry_date from live_view WHERE uid=:rfid_tag");
     $stmt->execute([":rfid_tag" => $uid]);
     $result = $stmt->fetch();
-    var_dump ($result);
+    // var_dump ($result);
 
     if ($stmt->rowCount() >= 1) {
         $stmt = $conn->prepare("INSERT INTO history (UID,entry_date,exit_time) Values (:uid,:ed,NOW());");
