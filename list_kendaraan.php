@@ -190,7 +190,7 @@ require("./conn.php");
                     'data': "driver",
                 },
                 {
-                    'data': "murid"
+                    'data': "name"
                 },
                 {
                     'data': "foto",

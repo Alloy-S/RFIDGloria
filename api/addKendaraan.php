@@ -20,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $data['pesan'] = "RFID sudah terdaftar!!";
         die(json_encode($data));
     }
-    $stmt_cek = $conn->prepare("SELECT * FROM db_kendaraan WHERE plat_mobil = :plat");
-    $stmt_cek->execute([":plat" => $plat]);
+    $stmt_cek = $conn->prepare("SELECT * FROM db_kendaraan WHERE plat_mobil = :plat AND murid =:murid");
+    $stmt_cek->execute([":plat" => $plat,":murid"=> $murid]);
     if ($stmt_cek->rowCount() >= 1) {
-        $data['pesan'] = "Plat mobil sudah terdaftar!!";
+        $data['pesan'] = "Tidak bisa mendaftarkan kendaraan dengan id murid yang sama";
         die(json_encode($data));
     }
     if ($errorFile === 4) {
