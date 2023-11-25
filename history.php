@@ -74,9 +74,11 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Name</th>
-                                            <th>Kendaraan</th>
+                                            <th>UID Card</th>
+                                            <th>Nama Driver</th>
                                             <th>Plat No</th>
+                                            <th>Jenis Mobil</th>
+                                            <th>Nama Murid</th>
                                             <th>Waktu Datang</th>
                                             <th>Waktu Pergi</th>
                                     </thead>
@@ -146,13 +148,19 @@
                         }
                     },
                     {
-                        'data': 'murid'
+                        'data': "UID",
+                    },
+                    {
+                        'data': "nama_driver",
+                    },
+                    {
+                        'data': "plat_no",
                     },
                     {
                         'data': "jenis_mobil",
                     },
                     {
-                        'data': "plat_mobil",
+                        'data': 'nama_murid'
                     },
                     {
                         'data': "entry_date",

@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             die(json_encode($data));
         }
 
+        // add sound
         $file = uniqid('', true) . "" . ".wav";
         $text = "siswa " . $murid . " Kelas 11A telah di jemput. harap bersiap di lobby utara.";
         $text = str_replace(" ", "+", $text);
@@ -57,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
         $stmt2->execute([":id_murid" => $murid,":id_kendaraan" => $insertId]);
         if ($stmt->rowCount() > 0) {
-            // rfid
+            //  clear rfid
             $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
             $stmt->execute([":newUID" => "", ":id" => 1]);
 
