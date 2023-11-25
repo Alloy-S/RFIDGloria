@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
         file_put_contents($file, $current);
 
-        $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `murid`, `foto`, 'sound') VALUES (:jenis,:plat,:rfid,:driver,:murid,:foto,:sound)");
+        $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `id_murid`, `foto`, 'sound') VALUES (:jenis,:plat,:rfid,:driver,:murid,:foto,:sound)");
         $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":murid" => $murid, ":foto" => $namabukti, ":sound" => $file]);
         if ($stmt->rowCount() > 0) {
             // rfid
