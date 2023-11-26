@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     } else {
         echo "kendaraan tidak ada";
     }
-}
+} 
 
 
 // if ($kendaraan->rowCount() >= 1) {
