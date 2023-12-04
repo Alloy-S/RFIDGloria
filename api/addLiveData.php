@@ -3,21 +3,22 @@ include("../conn.php");
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     $uid = array("50:b7:e4:a4:","ghjkgfaukgf","coba","d2:8e:50:96:");
     $randomUID = $uid[array_rand($uid)];
+    $stmt = $conn->prepare("SELECT * FROM jam_operasional");
+    $stmt->execute();
+    $hasil = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 
     // echo "Randomly chosen UID: $randomUID\n";
     $valid = false;
 
-    date_default_timezone_set('Asia/Jakarta');
-
     $currentLocalTime = date('H:i:s');
-    $time1 = array(date("10:00:00"),date("10:30:00"));
-    $time2 = array(date("12:00:00"),date("12:30:00"));
-    $time3 = array(date("13:00:00"),date("13:30:00"));
-    $time4 = array(date("15:00:00"),date("15:30:00"));
+    $time1 = array($hasil[0]["jam awal"],$hasil[0]["jam akhir"]);
+    $time2 = array($hasil[1]["jam awal"],$hasil[1]["jam akhir"]);
+    $time3 = array($hasil[2]["jam awal"],$hasil[2]["jam akhir"]);
+    $time4 = array($hasil[3]["jam awal"],$hasil[3]["jam akhir"]);
     // echo "Current local time: $currentLocalTime\n";
 
     $uid = $_POST["uid"];
-    $stmt = $conn->prepare("SELECT c.grade from db_kendaraan AS a JOIN murid_to_kendaraan AS b ON a.id = b.id_kendaraan JOIN murid AS c ON b.id_murid = c.student_id WHERE a.rfid_tag = :id");
+    $stmt = $conn->prepare("SELECT c.grade,c.student_id from db_kendaraan AS a JOIN murid_to_kendaraan AS b ON a.id = b.id_kendaraan JOIN murid AS c ON b.id_murid = c.student_id WHERE a.rfid_tag = :id");
     $stmt->execute([":id" => $uid]);
     $kelas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // $kelas = $kelas[0];
@@ -31,25 +32,29 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         if($grade >= 1 && $grade <= 3){
             if($currentLocalTime >= reset($time2) && $currentLocalTime <= end($time2)){
                 $valid = true;
+                $murid_id = $row["student_id"];
             }
         }else if($grade >= 4 && $grade <= 6){
             if($currentLocalTime >= reset($time3) && $currentLocalTime <= end($time3)){
                 $valid = true;
+                $murid_id = $row["student_id"];
             }
         }else if($grade >= 7 && $grade <=9){
             if($currentLocalTime >= reset($time4) && $currentLocalTime <= end($time4)){
                 $valid = true;
+                $murid_id = $row["student_id"];
             }
         }else{
             if($currentLocalTime >= reset($time1) && $currentLocalTime <= end($time1)){
                 $valid = true;
-                }
+                $murid_id = $row["student_id"];
+            }
         }
     }
 
     if($valid){
-        $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`) VALUES (:uid)");
-        $stmt->execute([":uid" => $randomUID]);
+        $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
+        $stmt->execute([":uid" => $randomUID,":murid_id" => $murid_id]);
     }
 }
 ?>

@@ -2,8 +2,8 @@
 include("../conn.php");
     if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     $uid = $_POST["uid"];
-    $stmt = $conn->prepare("SELECT id,entry_date from live_view WHERE uid=:rfid_tag");
-    $stmt->execute([":rfid_tag" => $uid]);
+    $stmt = $conn->prepare("SELECT id,entry_date from live_view WHERE uid=:student_id");
+    $stmt->execute([":student_id" => $uid]);
     $result = $stmt->fetch();
     // var_dump ($result);
 

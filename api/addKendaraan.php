@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $insertId = $conn->lastInsertId();
         $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
         $stmt2->execute([":id_murid" => $murid,":id_kendaraan" => $insertId]);
-        if ($stmt->rowCount() > 0) {
+        if ($stmt->rowCount() > 0 AND $stmt2->rowCount()>0) {
             // rfid
             $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
             $stmt->execute([":newUID" => "", ":id" => 1]);

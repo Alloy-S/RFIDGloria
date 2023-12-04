@@ -150,7 +150,7 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
             </footer>
             <!-- End of Footer -->
 
-        </div>
+        </div>script
         <!-- End of Content Wrapper -->
 
     </div>
