@@ -92,9 +92,11 @@
                                 <thead>
                                     <tr>
                                         <!-- <th>No</th> -->
-                                        <th>Name</th>
+                                        <th>Id Murid</th>
+                                        <th>Kelas</th>
+                                        <th>Murid</th>
                                         <th>Kendaraan</th>
-                                        <th>Plat No</th>
+                                        <th>No. Plat</th>
                                         <th>Status</th>
                                 </thead>
                                 <tbody>
@@ -174,7 +176,13 @@
                 //     }
                 // },
                 {
-                    'data': 'murid'
+                    'data': "id_murid",
+                },
+                {
+                    'data': "kelas",
+                },
+                {
+                    'data': "murid",
                 },
                 {
                     'data': "jenis_mobil",

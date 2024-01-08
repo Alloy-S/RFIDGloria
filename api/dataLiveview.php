@@ -9,38 +9,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $offset = ($page - 1) * $limit;
 
     // Count total data without limit
-    $total_data = $conn->query("SELECT COUNT(*) FROM history
-        INNER JOIN db_kendaraan ON history.UID = db_kendaraan.rfid_tag
-        WHERE DATE(history.entry_date) = CURRENT_DATE")->fetchColumn();
+    $total_data = $conn->query("SELECT COUNT(*) FROM live_view WHERE entry_date = CURRENT_DATE")->fetchColumn();
 
     $total_pages = ceil($total_data / $limit);
 
     $result = $conn->prepare("SELECT
-        db_kendaraan.murid,
-        db_kendaraan.jenis_mobil,
-        db_kendaraan.plat_mobil,
-        IF(history.exit_time IS NULL,
-            CASE
-                WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date) < 60 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date))), ' second')
-                WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date) >= 60 AND UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date) < 3600 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date)) / 60), ' minute')
-                WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date) >= 3600 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.entry_date)) / 3600), ' hour')
-                ELSE 'Has arrived'
-            END, 
-            CASE
-                WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time) < 60 THEN CONCAT('Already left since ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time))), ' second ago')
-                WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time) >= 60 AND UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time) < 3600 THEN CONCAT('Already left since ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time)) / 60), ' minute ago')
-                WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time) >= 3600 THEN CONCAT('Already left since ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(history.exit_time)) / 3600), ' hour ago')
-                ELSE 'Has left' 
-            END
+        c.student_id AS id_murid,
+        CONCAT(c.grade,' ',c.class) AS kelas,
+        c.name AS murid,
+        a.jenis_mobil AS jenis_mobil,
+        a.plat_mobil AS plat_mobil,
+        (CASE
+            WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date) < 60 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date))), ' second')
+            WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date) >= 60 AND UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date) < 3600 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date)) / 60), ' minute')
+            WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date) >= 3600 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(d.entry_date)) / 3600), ' hour')
+            ELSE 'Has arrived'
+        END
         ) AS status
-        FROM
-        history
-        INNER JOIN
-        db_kendaraan ON history.UID = db_kendaraan.rfid_tag
+        FROM db_kendaraan AS a
+        JOIN murid_to_kendaraan AS b
+        ON a.id = b.id_kendaraan
+        JOIN murid AS c
+        ON b.id_murid = c.student_id
+        JOIN live_view AS d
+        ON a.rfid_tag = d.UID
         WHERE 
-        DATE(history.entry_date) = CURRENT_DATE
+        DATE(d.entry_date) = CURRENT_DATE
         ORDER BY
-        history.entry_date DESC
+        d.entry_date DESC
         LIMIT $offset, $limit
     ;");
 
