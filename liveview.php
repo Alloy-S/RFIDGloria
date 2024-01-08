@@ -57,6 +57,17 @@
             }
         }
 
+        #grade {
+            color: white;
+            border: none;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        #grade>option {
+            font-size: 15px;
+        }
+
     </style>
 
     
@@ -82,6 +93,13 @@
                         </div>
                     </a>
                     <h2 style="font-size:3em;font-weight:bold" class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
+            	    <!-- Opsi Liveview -->
+                    <select name="grade" id="grade" class="bg-gradient-primary">`
+                        <option value="all" selected>All</option>
+                        <option value="tk">TK</option>
+                        <option value="sd">SD</option>
+                        <option value="smp">SMP</option>
+                    </select>
                 </header>
 
                 <!-- Begin Page Content -->
@@ -98,6 +116,7 @@
                                         <th>Kendaraan</th>
                                         <th>No. Plat</th>
                                         <th>Status</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     
@@ -162,6 +181,9 @@
                 data: function (d) {
                     // Send the current page as a parameter
                     d.page = page;
+
+                    // Send the grade value
+                    d.grade = $('#grade').val();
                 },
                 dataSrc: function (json) {
                     total_pages = json.total_pages;
@@ -205,8 +227,8 @@
                     var currentTime = new Date();
                     var timeDifference = currentTime - lastPageChangeTime;
                     
-                    // Auto-refresh data every 1 second
-                    if (timeDifference >= 1000) {
+                    // Auto-refresh data every 0.001 second
+                    if (timeDifference >= 1) {
                         table.ajax.reload(null, false);
                     }
                     
