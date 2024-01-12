@@ -64,9 +64,20 @@
 
   <!-- Nav Item - Tables -->
   <li class="nav-item">
-    <a class="nav-link" href="./liveview.php" target="_blank">
+    <a class="nav-link collapsed" href="./liveview.php" data-toggle="collapse" data-target="#collapseLiveview" aria-expanded="true"
+      aria-controls="collapseLiveview">
       <i class="fas fa-fw fa-table"></i>
-      <span>Live View</span></a>
+      <span>Live View</span>
+    </a>
+    <div id="collapseLiveview" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6 class="collapse-header">Menu:</h6>
+        <a class="collapse-item" href="./liveview.php" target="_blank">All</a>
+        <a class="collapse-item" href="./liveview.php?grade=tk" target="_blank">TK</a>
+        <a class="collapse-item" href="./liveview.php?grade=sd" target="_blank">SD</a>
+        <a class="collapse-item" href="./liveview.php?grade=smp" target="_blank">SMP</a>
+      </div>
+    </div>
   </li>
 
   <!-- Divider -->

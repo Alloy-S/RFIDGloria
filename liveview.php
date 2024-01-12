@@ -94,7 +94,7 @@
                     </a>
                     <h2 style="font-size:3em;font-weight:bold" class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
             	    <!-- Opsi Liveview -->
-                    <select name="grade" id="grade" class="bg-gradient-primary">`
+                    <select name="grade" id="grade" class="bg-gradient-primary" onchange="reloadTable()">
                         <option value="all" selected>All</option>
                         <option value="tk">TK</option>
                         <option value="sd">SD</option>
@@ -169,11 +169,22 @@
 </body>
 
 <script>
+    var page = 1;
+    var total_pages = 1;
+
     $(document).ready(function () {
-        var page = 1;
-        var total_pages = 1;
+        // Variable Initialization
+        var defaultGrade = "all";
         var lastPageChangeTime = new Date();
 
+        // Modifying Selection State for Grade
+        var urlParams = new URLSearchParams(window.location.search);
+        var gradeParam = urlParams.get('grade');
+
+        var selectedGrade = gradeParam || defaultGrade;
+        $('#grade').val(selectedGrade);
+
+        // Table initialization
         var table = $('#dataLiveview').DataTable({
             ajax: {
                 url: "./api/dataLiveview.php",
@@ -232,16 +243,16 @@
                         table.ajax.reload(null, false);
                     }
                     
-                    // Change page every 3 seconds & check if 10 seconds have passed since the last page change
-                    if (timeDifference >= 3000) {
+                    // Change page every 5 seconds & check if 5 seconds have passed since the last page change
+                    if (timeDifference >= 5000) {
                         // Add a fade-out effect before reloading
-                        $('#dataLiveview').fadeOut(300, function () {
+                        $('#dataLiveview').fadeOut(500, function () {
                             table.ajax.reload(null, false);
                             table.ajax.reload(function () {
                                 // Log after reload
                                 console.log("Reloaded. Current Page:", page);
                                 // Add a fade-in effect after reloading
-                                $('#dataLiveview').fadeIn(300);
+                                $('#dataLiveview').fadeIn(500);
                                 table.ajax.reload(null, false);
                             }, false);
                         });
@@ -259,6 +270,19 @@
             }
         });
     });
+
+    function reloadTable() {
+        var selectedGrade = $('#grade').val();
+
+        // Update the URL in the address bar
+        var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?grade=' + selectedGrade;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+
+        // Reset DataTable with page=1
+        page = 1;
+        reloadTable
+    }
+
 </script>
 
 </html>
