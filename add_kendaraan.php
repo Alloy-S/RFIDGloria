@@ -2,7 +2,7 @@
 require("./conn.php");
 
 $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
-        $stmt->execute([":newUID" => "", ":id" => 1]);
+$stmt->execute([":newUID" => "", ":id" => 1]);
 
 ?>
 
@@ -111,10 +111,29 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
                         <label for="plat_mobil" class="form-label">Plat Mobil</label>
                         <input type="text" class="form-control" id="plat_mobil" name="plat" required>
                     </div>
-                    <div class="col-12 mb-3">
+                    <!-- <div class="col-12 mb-3">
                         <label for="rfid_tag" class="form-label">RFID Tag</label>
                         <input type="text" class="form-control" id="rfid_tag" name="rfid" readonly>
+                    </div> -->
+                    <div class="col-12 mb-3">
+                        <label for="rfid_tag" class="form-label">Car RFID Tag</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="rfid_tag" name="rfid" readonly>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="scanRfid1" data-toggle="modal" data-target="#rfidModal">Scan</button>
+                            </div>
+                        </div>
                     </div>
+                    <div class="col-12 mb-3">
+                        <label for="studentCard" class="form-label">Student Card</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="studentCard" name="studentCard" readonly>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" id="scanRfid2" data-toggle="modal" data-target="#rfidModal">Scan</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-12 mb-3">
                         <label for="driver" class="form-label">Driver</label>
                         <input type="text" class="form-control" id="driver" name="driver" required>
@@ -132,7 +151,7 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
                     <div class="col-4 col-lg-2 mb-3">
                         <img id="preview" src="" class="w-100">
                     </div>
-                    <div class="col-4 col-lg-2">
+                    <div class="col-4 col-lg-2 mb-3">
                         <button type="submit" class="submit-btn btn btn-primary w-100">Confirm</button>
                     </div>
                 </form>
@@ -150,7 +169,7 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
             </footer>
             <!-- End of Footer -->
 
-        </div>script
+        </div>
         <!-- End of Content Wrapper -->
 
     </div>
@@ -160,6 +179,29 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="rfidModal" tabindex="-1" aria-labelledby="rfidModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Scan RFID</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+                        <dotlottie-player src="https://lottie.host/e76b14b4-c5c1-4645-b41c-0d352f45bfbc/oc4To4iLOW.json" background="#fff" speed="1" style="width: 300px; height: 300px" direction="1" playMode="normal" loop autoplay></dotlottie-player>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -226,17 +268,56 @@ $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
         })
     })
 
+    var rfidReciveMode = 0;
+
     setInterval(function() {
+        if (($("#rfidModal").data('bs.modal') || {})._isShown) {
+            // console.log("modal open");
+            $.ajax({
+                url: "./api/getUID.php",
+                type: 'GET',
+                success: function(res) {
+                    console.log(res);
+                    if (res != "") {
+                        if (rfidReciveMode == 0) {
+                            $("#rfid_tag").val(res);
+                        } else {
+                            $("#studentCard").val(res); 
+                        }
+
+                        $('#rfidModal').modal('hide');
+                        // $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                    }
+
+                }
+            });
+        }
+    }, 1000);
+
+    $("#scanRfid1").on("click", function() {
+        console.log("click");
         $.ajax({
-            url: "./api/getUID.php",
-            type: 'GET',
+            url: "./api/clearRfid.php",
+            type: "GET",
             success: function(res) {
-                $("#rfid_tag").val(res);
+                $("#rfid_tag").val("");
+                rfidReciveMode = 0;
             }
         });
+    });
 
-        console.log($("#rfid_tag").val())
-    }, 1000);
+    $("#scanRfid2").on("click", function() {
+        console.log("click");
+        $.ajax({
+            url: "./api/clearRfid.php",
+            type: "GET",
+            success: function(res) {
+                $("#studentCard").val("");
+                rfidReciveMode = 1;
+            }
+        });
+    });
 
     $("#inputGroupFile").on("change", function() {
         const selectedImage = this.files[0];
