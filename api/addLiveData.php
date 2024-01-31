@@ -58,6 +58,13 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         if ($valid) {
             $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
             $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
+            echo "succes";
+        } else {
+            echo "tidak valid";
         }
+        return;
     }
+    echo "failed";
+    return;
 }
+echo "HARUS MENGGUNAKAN POST";
