@@ -1,33 +1,74 @@
-<?php 
+<?php
 require_once("../conn.php");
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $uid = $_POST['uid'];
 
-    $stmt = $conn->prepare("SELECT * FROM db_kendaraan WHERE rfid_tag=:uid");
+    $stmt = $conn->prepare("SELECT * FROM murid  WHERE UID=:uid");
     $stmt->execute([":uid" => $uid]);
 
-    if($stmt->rowCount() >= 1) {
-        $dataKendaraan = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($stmt->rowCount() >= 1) {
+        $dataSiswa = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $studentId = $dataSiswa[0]['student_id'];
 
-        $stmt = $conn->prepare("SELECT * FROM tmphistory WHERE UID=:uid");
-        $stmt->execute([":uid" => $uid]);
+        // echo $studentId;
+        $stmt = $conn->prepare("SELECT * FROM murid_to_kendaraan WHERE id_murid=:studentId");
+        $stmt->execute([":studentId" => $studentId]);
 
-        if($stmt->rowCount() >= 1) {
-            $tmpHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($stmt->rowCount() >= 1) {
+            $listKendaraan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $toHistory = $conn->prepare("INSERT INTO history (UID, nama_driver, plat_no, jenis_mobil, nama_murid, entry_date) Values (:uid, :nama_driver, :plat_no, :jenis_mobil, :nama_murid, :entry_date);");
-            $toHistory->execute([":uid" => $uid, ":nama_driver" => $tmpHistory[0]["nama_driver"], ":plat_no" => $tmpHistory[0]["plat_no"], ":jenis_mobil" => $tmpHistory[0]["jenis_mobil"], ":nama_murid" => $tmpHistory[0]["nama_murid"], ":entry_date" => $tmpHistory[0]["tap_in"]]);
-            $stmt = $conn->prepare("DELETE FROM tmphistory WHERE id=:id");
-            $stmt->execute([":id" => $tmpHistory[0]['id']]);
-            echo "Berhasil tap out";
+            foreach ($listKendaraan as $Kendaraan) {
+                $tmpHistory = $conn->prepare("SELECT * FROM tmphistory WHERE id_kendaraan=:id_kendaraan");
+                $tmpHistory->execute([":id_kendaraan" => $Kendaraan['id_kendaraan']]);
+
+                if ($tmpHistory->rowCount() > 0) {
+                    $tmpHistory = $tmpHistory->fetchAll(PDO::FETCH_ASSOC);
+
+                    $toHistory = $conn->prepare("INSERT INTO history (UID, nama_driver, plat_no, jenis_mobil, nama_murid, entry_date) Values (:uid, :nama_driver, :plat_no, :jenis_mobil, :nama_murid, :entry_date);");
+                    $toHistory->execute([":uid" => $uid, ":nama_driver" => $tmpHistory[0]["nama_driver"], ":plat_no" => $tmpHistory[0]["plat_no"], ":jenis_mobil" => $tmpHistory[0]["jenis_mobil"], ":nama_murid" => $tmpHistory[0]["nama_murid"], ":entry_date" => $tmpHistory[0]["tap_in"]]);
+                    $stmt = $conn->prepare("DELETE FROM tmphistory WHERE id=:id");
+                    $stmt->execute([":id" => $tmpHistory[0]['id']]);
+                    echo "Berhasil tap out";
+                    // echo "delete" . $Kendaraan['id_kendaraan'];
+                }
+            }
+
+
+            // echo json_encode($listKendaraan);
             return;
-        } {
-            echo "belum di jemput";
         }
-    } else {
-        echo "kendaraan tidak ada";
+        echo "tidak ada kendaraan yang terdaftar";
+        return;
     }
-} 
+
+    echo "data tidak ditemukan";
+
+
+    // $stmt = $conn->prepare("SELECT * FROM db_kendaraan WHERE rfid_tag=:uid");
+    // $stmt->execute([":uid" => $uid]);
+
+    // if ($stmt->rowCount() >= 1) {
+    //     $dataKendaraan = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //     $stmt = $conn->prepare("SELECT * FROM tmphistory WHERE UID=:uid");
+    //     $stmt->execute([":uid" => $uid]);
+
+    //     if ($stmt->rowCount() >= 1) {
+    //         $tmpHistory = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //         $toHistory = $conn->prepare("INSERT INTO history (UID, nama_driver, plat_no, jenis_mobil, nama_murid, entry_date) Values (:uid, :nama_driver, :plat_no, :jenis_mobil, :nama_murid, :entry_date);");
+    //         $toHistory->execute([":uid" => $uid, ":nama_driver" => $tmpHistory[0]["nama_driver"], ":plat_no" => $tmpHistory[0]["plat_no"], ":jenis_mobil" => $tmpHistory[0]["jenis_mobil"], ":nama_murid" => $tmpHistory[0]["nama_murid"], ":entry_date" => $tmpHistory[0]["tap_in"]]);
+    //         $stmt = $conn->prepare("DELETE FROM tmphistory WHERE id=:id");
+    //         $stmt->execute([":id" => $tmpHistory[0]['id']]);
+    //         echo "Berhasil tap out";
+    //         return;
+    //     } {
+    //         echo "belum di jemput";
+    //     }
+    // } else {
+    //     echo "kendaraan tidak ada";
+    // }
+}
 
 
 // if ($kendaraan->rowCount() >= 1) {
@@ -61,4 +102,3 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 //     echo "Tag tidak dikenali";
 // }
 // echo "succes";
-?>
