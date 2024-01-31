@@ -18,9 +18,7 @@ require("./conn.php");
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
@@ -54,7 +52,6 @@ require("./conn.php");
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
             padding-top: 50px;
             left: 0;
             top: 0;
@@ -87,7 +84,37 @@ require("./conn.php");
     <!-- Page Wrapper -->
     <div id="wrapper">
 
+        <!-- modal list murid -->
+        <!-- Button trigger modal -->
+
+        <!-- Modal List Murid-->
+
+
         <?php include "sidebar.php" ?>
+        <div class="modal fade" id="modalListMurid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" style="color: #000000">
+                            List Murid
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <p id="mobilId">Veloz (haha)</p>
+                        <ul id="listMurid">
+                            <li>Test</li>
+                            <li>Test</li>
+                            <li>Test</li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -160,20 +187,27 @@ require("./conn.php");
 </body>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         var table = $('#dataMobil').DataTable({
             ajax: "./api/dataMobil.php",
             method: "GET",
             order: ([0, 'asc']),
             dataSrc: "data",
-            columnDefs: [
-                { "width": "14%", "targets": 7 },
-                { "width": "10%", "targets": 6 },
-                { "width": "5%", "targets": 0 }
-            ],
-            columns: [
+            columnDefs: [{
+                    "width": "14%",
+                    "targets": 7
+                },
                 {
-                    render: function (data, type, row, meta) {
+                    "width": "10%",
+                    "targets": 6
+                },
+                {
+                    "width": "5%",
+                    "targets": 0
+                }
+            ],
+            columns: [{
+                    render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },
@@ -188,13 +222,20 @@ require("./conn.php");
                 },
                 {
                     'data': "driver",
+
                 },
                 {
-                    'data': "name"
+                    'data': "id",
+                    "render": function(data, type, row, meta) {
+                        return `<button type="button" onclick="checkMurid(event)" data-params='[${data}, "${row.jenis_mobil}", "${row.plat_mobil}"]' class="btn btn-primary">
+                                View
+                                </button>`;
+
+                    }
                 },
                 {
                     'data': "foto",
-                    "render": function (data, type, row, meta) {
+                    "render": function(data, type, row, meta) {
                         return `<button type="button" class="btn btn-primary" onclick="viewFoto('${data}')"> View Foto
                             </button>`;
 
@@ -202,7 +243,7 @@ require("./conn.php");
                 },
                 {
                     'data': "id",
-                    "render": function (data, type, row, meta) {
+                    "render": function(data, type, row, meta) {
                         return `<a href = ./edit_kendaraan.php?id=${data}><button type="button" class="btn btn-primary"><span class="mr-2"><i class="fas fa-edit" style="color: #ffffff;"></i></span>Edit
                             </button></a> <button type="button" class="btn btn-warning" onclick="deleteKendaraan(${data})"><span class="mr-2"><i class="fas fa-trash" style="color: #ffffff;"></i></span>Delete
                             </button>`;
@@ -212,16 +253,52 @@ require("./conn.php");
             ]
         });
     })
+
     function viewFoto(url) {
         var modal = document.getElementById("myModal");
         var modalImg = document.getElementById("modalImage");
         modal.style.display = "block";
         modalImg.src = "./upload_foto/" + url;
     }
+
     function closeModal() {
         var modal = document.getElementById("myModal");
         modal.style.display = "none";
     }
+
+    function checkMurid(id) {
+        const modalMurid = $('#modalListMurid');
+        const bodyModalMobil = modalMurid.find('#mobilId');
+        const ul = modalMurid.find('#listMurid');
+        var paramsString = event.target.getAttribute('data-params');
+
+        // Mengonversi string JSON menjadi array JavaScript
+        var parameterArray = JSON.parse(paramsString);
+
+        // Sekarang, parameterArray adalah array yang berisi semua parameter
+        // console.log(parameterArray);
+        bodyModalMobil.html(`<p>${parameterArray[1]} (${parameterArray[2]})</p>`);
+        modalMurid.modal({
+            backdrop: false
+        });
+        // const bodyModal = modalMurid.querySelector('.modal-body');
+        $.ajax({
+            url: "./api/checkMurid.php",
+            type: "POST",
+            data: {
+                id: parameterArray[0]
+            }
+        }).done((data) => {
+            var li = ''
+            data.data.forEach(element => {
+                li += `<li>${element.name} (${element.student_id})</li>`
+            });
+            ul.html(li)
+            modalMurid.modal('show');
+
+        })
+    }
+
     function deleteKendaraan(id) {
         Swal.fire({
             title: 'Are you sure?',
@@ -236,7 +313,9 @@ require("./conn.php");
                 $.ajax({
                     url: "./api/deleteDataKendaraan.php",
                     type: "POST",
-                    data: { id: id }
+                    data: {
+                        id: id
+                    }
                 }).done((data) => {
                     if (data != "success") {
                         Swal.fire({
