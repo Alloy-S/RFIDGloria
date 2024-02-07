@@ -124,7 +124,7 @@ $stmt->execute([":newUID" => "", ":id" => 1]);
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 mb-3">
+                    <!-- <div class="col-12 mb-3">
                         <label for="studentCard" class="form-label">Student Card</label>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" id="studentCard" name="studentCard" readonly>
@@ -132,7 +132,7 @@ $stmt->execute([":newUID" => "", ":id" => 1]);
                                 <button class="btn btn-primary" type="button" id="scanRfid2" data-toggle="modal" data-target="#rfidModal">Scan</button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="col-12 mb-3">
                         <label for="driver" class="form-label">Driver</label>
@@ -141,6 +141,7 @@ $stmt->execute([":newUID" => "", ":id" => 1]);
                     <div class="col-12 mb-3">
                         <label for="murid" class="form-label">Id Murid</label>
                         <input type="text" class="form-control" id="murid" name="murid" required>
+                        <span>Untuk 2 atau lebih murid silahkan pisahkan dengan koma (c14210151,c14210093)</span>
                     </div>
                     <div class="input-group custom-file-button col-12 mb-3">
                         <label class="input-group-text" for="inputGroupFile"><span class="mr-2">
@@ -282,7 +283,7 @@ $stmt->execute([":newUID" => "", ":id" => 1]);
                         if (rfidReciveMode == 0) {
                             $("#rfid_tag").val(res);
                         } else {
-                            $("#studentCard").val(res); 
+                            $("#studentCard").val(res);
                         }
 
                         $('#rfidModal').modal('hide');

@@ -3,7 +3,16 @@ require("./conn.php");
 $id = $_GET["id"];
 $stmt = $conn->prepare("SELECT * FROM db_kendaraan AS A JOIN murid_to_kendaraan AS B ON A.id = B.id_kendaraan WHERE A.id = :id");
 $stmt->execute([":id" => $id]);
-$data = $stmt->fetch(PDO::FETCH_ASSOC);
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if (count($data) == 1) {
+    $murid = $data[0]['id_murid'];
+} else {
+    $murid = $data[0]['id_murid'];
+    array_shift($data);
+    foreach ($data as $row) {
+        $murid .= "," . $row['id_murid'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -21,16 +30,12 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Sweet Alert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -104,33 +109,27 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             <!-- Main Content -->
             <div class="container-fluid" style="padding-inline:4em;margin-top:6em;">
                 <h1 style="color:#0352A3;font-size:3em;font-weight:bold">Edit Kendaraan</h1>
-                <form id="submit-edit-kendaraan" action="./api/editKendaraan.php" enctype="multipart/form-data"
-                    method="POST">
-                    <input type="hidden" value="<?= $data['id_kendaraan'] ?>" name="id">
+                <form id="submit-edit-kendaraan" action="./api/editKendaraan.php" enctype="multipart/form-data" method="POST">
+                    <input type="hidden" value="<?= $data[0]['id_kendaraan'] ?>" name="id">
                     <div class="col-12 mb-3">
                         <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
-                        <input type="text" class="form-control" id="jenis_mobil" name="jenis"
-                            value="<?= $data['jenis_mobil'] ?>" required>
+                        <input type="text" class="form-control" id="jenis_mobil" name="jenis" value="<?= $data[0]['jenis_mobil'] ?>" required>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="plat_mobil" class="form-label">Plat Mobil</label>
-                        <input type="text" class="form-control" id="plat_mobil" name="plat"
-                            value="<?= $data['plat_mobil'] ?>" required>
+                        <input type="text" class="form-control" id="plat_mobil" name="plat" value="<?= $data[0]['plat_mobil'] ?>" required>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="rfid_tag" class="form-label">RFID Tag</label>
-                        <input type="text" class="form-control" id="rfid_tag" name="rfid"
-                            value="<?= $data['rfid_tag'] ?>" required>
+                        <input type="text" class="form-control" id="rfid_tag" name="rfid" value="<?= $data[0]['rfid_tag'] ?>" required>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="driver" class="form-label">Driver</label>
-                        <input type="text" class="form-control" id="driver" name="driver" value="<?= $data['driver'] ?>"
-                            required>
+                        <input type="text" class="form-control" id="driver" name="driver" value="<?= $data[0]['driver'] ?>" required>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="murid" class="form-label">Id Murid</label>
-                        <input type="text" class="form-control" id="murid" name="murid" value="<?= $data['id_murid'] ?>"
-                            required>
+                        <input type="text" class="form-control" id="murid" name="murid" value="<?= $murid ?>" required>
                     </div>
                     <div class="input-group custom-file-button col-12 mb-3">
                         <label class="input-group-text" for="inputGroupFile"><span class="mr-2">
@@ -139,7 +138,7 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <input type="file" class="form-control" id="inputGroupFile" name="foto_mobil">
                     </div>
                     <div class="col-4 col-lg-2 mb-3">
-                        <img id="preview" src="upload_foto/<?= $data['foto']; ?>" class="w-100">
+                        <img id="preview" src="upload_foto/<?= $data[0]['foto']; ?>" class="w-100">
                     </div>
                     <div class="col-4 col-lg-2">
                         <button type="submit" class="submit-btn btn btn-primary w-100">Save</button>
@@ -190,8 +189,8 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
 </body>
 
 <script>
-    $(document).ready(function () {
-        $("#submit-edit-kendaraan").on("submit", function (e) {
+    $(document).ready(function() {
+        $("#submit-edit-kendaraan").on("submit", function(e) {
             e.preventDefault();
             Swal.fire({
                 title: 'Are you sure?',
@@ -234,13 +233,13 @@ $data = $stmt->fetch(PDO::FETCH_ASSOC);
             })
         })
     })
-    $("#inputGroupFile").on("change", function () {
+    $("#inputGroupFile").on("change", function() {
         const selectedImage = this.files[0];
 
         if (selectedImage) {
             const reader = new FileReader();
 
-            reader.onload = function () {
+            reader.onload = function() {
                 $("#preview").attr("src", reader.result);
             };
 
