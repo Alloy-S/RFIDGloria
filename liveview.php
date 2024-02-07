@@ -31,7 +31,6 @@
     <!-- JQUERY -->
     <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
     <style>
-
         .logo-gloria {
             border-radius: 50%;
         }
@@ -40,7 +39,7 @@
             background-color: #0352A3;
             color: #FFFFFF;
         }
-        
+
         .header-footer {
             color: white;
             margin: 0;
@@ -48,7 +47,7 @@
 
         #footer {
             position: fixed;
-            bottom: 0; 
+            bottom: 0;
         }
 
         @media (max-width: 768px) {
@@ -67,10 +66,9 @@
         #grade>option {
             font-size: 15px;
         }
-
     </style>
 
-    
+
 
 </head>
 
@@ -93,13 +91,13 @@
                         </div>
                     </a>
                     <h2 style="font-size:3em;font-weight:bold" class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
-            	    <!-- Opsi Liveview -->
-                    <select name="grade" id="grade" class="bg-gradient-primary" onchange="reloadTable()">
-                        <option value="all" selected>All</option>
-                        <option value="tk">TK</option>
-                        <option value="sd">SD</option>
-                        <option value="smp">SMP</option>
-                    </select>
+                        <!-- Opsi Liveview -->
+                        <select name="grade" id="grade" class="bg-gradient-primary" onchange="reloadTable()">
+                            <option value="all" selected>All</option>
+                            <option value="tk">TK</option>
+                            <option value="sd">SD</option>
+                            <option value="smp">SMP</option>
+                        </select>
                 </header>
 
                 <!-- Begin Page Content -->
@@ -119,7 +117,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -165,14 +163,14 @@
     <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
     <script src="./js/demo/datatables-demo.js"></script>
 
-    
+
 </body>
 
 <script>
     var page = 1;
     var total_pages = 1;
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Variable Initialization
         var defaultGrade = "all";
         var lastPageChangeTime = new Date();
@@ -184,19 +182,97 @@
         var selectedGrade = gradeParam || defaultGrade;
         $('#grade').val(selectedGrade);
 
+        let playSound = false;
+        getSound();
+
+
+        function getSound() {
+            console.log("get sound");
+            $.ajax({
+                url: "./api/getSound.php",
+                dataType: "json",
+                type: "GET",
+                data: {
+                    grade: $('#grade').val(),
+                },
+                success: function(data) {
+                    console.log(data["sound"]);
+                    var sounds = [];
+                    data["sound"].forEach(element => {
+                        sounds.push(new Audio("./sound/" + element));
+                    });
+
+                    console.log(sounds);
+                    play_sound_queue(sounds);
+                }
+            })
+        }
+
+
+        function play(audio, callback) {
+            setTimeout(function() {
+                audio.play();
+                console.log(audio.currentSrc);
+                if (callback) {
+                    //When the audio object completes it's playback, call the callback
+                    //provided      
+                    audio.addEventListener('ended', callback);
+                }
+            }, 2000);
+
+        }
+
+        //Changed the name to better reflect the functionality
+        function play_sound_queue(sounds) {
+            var index = 0;
+
+            function recursive_play() {
+                //If the index is the last of the table, play the sound
+                //without running a callback after       
+                console.log(index)
+                console.log($('#grade').val());
+                // console.log(sounds[index].currentSrc);
+
+
+                if (sounds.length == 0) {
+                    console.log("empty");
+                    setTimeout(function() {
+                        getSound();
+                    }, 2000);
+                } else if (index + 1 === sounds.length) {
+                    // console.log(index);
+                    play(sounds[index], function() {
+                        getSound();
+                    });
+                } else {
+                    //Else, play the sound, and when the playing is complete
+                    //increment index by one and play the sound in the 
+                    //indexth position of the array
+                    play(sounds[index], function() {
+                        index++;
+                        // console.log(index);
+                        recursive_play();
+                    });
+                }
+            }
+
+            //Call the recursive_play for the first time
+            recursive_play();
+        }
+
         // Table initialization
         var table = $('#dataLiveview').DataTable({
             ajax: {
                 url: "./api/dataLiveview.php",
                 method: "GET",
-                data: function (d) {
+                data: function(d) {
                     // Send the current page as a parameter
                     d.page = page;
 
                     // Send the grade value
                     d.grade = $('#grade').val();
                 },
-                dataSrc: function (json) {
+                dataSrc: function(json) {
                     total_pages = json.total_pages;
                     return json.data;
                 }
@@ -230,25 +306,25 @@
             paging: false,
             searching: false,
             info: false,
-            initComplete: function (settings, json) {
+            initComplete: function(settings, json) {
                 // Auto-refresh the DataTable continuously (1-second interval)
-                setInterval(function () {
+                setInterval(function() {
                     console.log("Current Page:", page);
 
                     var currentTime = new Date();
                     var timeDifference = currentTime - lastPageChangeTime;
-                    
+
                     // Auto-refresh data every 0.001 second
                     if (timeDifference >= 1) {
                         table.ajax.reload(null, false);
                     }
-                    
+
                     // Change page every 5 seconds & check if 5 seconds have passed since the last page change
                     if (timeDifference >= 5000) {
                         // Add a fade-out effect before reloading
-                        $('#dataLiveview').fadeOut(500, function () {
+                        $('#dataLiveview').fadeOut(500, function() {
                             table.ajax.reload(null, false);
-                            table.ajax.reload(function () {
+                            table.ajax.reload(function() {
                                 // Log after reload
                                 console.log("Reloaded. Current Page:", page);
                                 // Add a fade-in effect after reloading
@@ -276,13 +352,14 @@
 
         // Update the URL in the address bar
         var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?grade=' + selectedGrade;
-        window.history.pushState({ path: newUrl }, '', newUrl);
+        window.history.pushState({
+            path: newUrl
+        }, '', newUrl);
 
         // Reset DataTable with page=1
         page = 1;
         reloadTable
     }
-
 </script>
 
 </html>

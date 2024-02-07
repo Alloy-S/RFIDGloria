@@ -1,5 +1,6 @@
 <?php
 include("../conn.php");
+include("./sendMessage.php");
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // $uid = array("50:b7:e4:a4:", "ghjkgfaukgf", "coba", "d2:8e:50:96:");
     // $randomUID = $uid[array_rand($uid)];
@@ -58,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         if ($valid) {
             $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
             $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
+            sendMessage($murid_id, $conn);
             echo "succes";
         } else {
             echo "tidak valid";

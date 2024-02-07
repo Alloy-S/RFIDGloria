@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             // echo json_encode($listKendaraan);
             return;
         }
-        echo "400";
+        echo "200";
         return;
     }
     echo "400";
