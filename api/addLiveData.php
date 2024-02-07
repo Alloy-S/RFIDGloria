@@ -65,5 +65,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         } else {
             echo "Already in Table";
         }
+        // return;
     }
+    echo "failed";
+    return;
 }
+echo "HARUS MENGGUNAKAN POST";

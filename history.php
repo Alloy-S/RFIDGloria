@@ -74,13 +74,16 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>UID Card</th>
-                                            <th>Nama Driver</th>
-                                            <th>Plat No</th>
+                                            <th>student id</th>
+                                            <th>nama siswa</th>
+                                            <th>grade</th>
+                                            <th>Class</th>
+                                            <th>Rfid Tag</th>
+                                            <th>Plat Mobil</th>
                                             <th>Jenis Mobil</th>
-                                            <th>Nama Murid</th>
-                                            <th>Waktu Datang</th>
-                                            <th>Waktu Pergi</th>
+                                            <th>Driver</th>
+                                            <th>Tapin Date</th>
+                                            <th>Tapout Date</th>
                                     </thead>
                                     <tbody>
                                         
@@ -148,25 +151,34 @@
                         }
                     },
                     {
-                        'data': "UID",
+                        'data': "student_id",
                     },
                     {
-                        'data': "nama_driver",
+                        'data': "nama_siswa",
                     },
                     {
-                        'data': "plat_no",
+                        'data': "grade",
                     },
                     {
-                        'data': "jenis_mobil",
+                        'data': "class",
                     },
                     {
-                        'data': 'nama_murid'
+                        'data': 'rfid_tag'
                     },
                     {
-                        'data': "entry_date",
+                        'data': "plat_mobil",
                     },
                     {
-                        'data': "exit_time"
+                        'data': "jenis_mobil"
+                    },
+                    {
+                        'data': "driver"
+                    },
+                    {
+                        'data': "tapin_date"
+                    },
+                    {
+                        'data': "tapout_date"
                     }
                 ]
             });

@@ -1,31 +1,70 @@
 <?php
-require_once("../conn.php");
+include("../conn.php");
+if ($_SERVER["REQUEST_METHOD"] == 'POST') {
+    // $uid = array("50:b7:e4:a4:", "ghjkgfaukgf", "coba", "d2:8e:50:96:");
+    // $randomUID = $uid[array_rand($uid)];
+    $stmt = $conn->prepare("SELECT * FROM jam_operasional");
+    $stmt->execute();
+    $hasil = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    $uid = $_POST['uid'];
+    // echo "Randomly chosen UID: $randomUID\n";
+    date_default_timezone_set('Asia/Jakarta');
+    $currentLocalTime = date('H:i:s');
+    $time1 = array($hasil[0]["jam awal"], $hasil[0]["jam akhir"]);
+    $time2 = array($hasil[1]["jam awal"], $hasil[1]["jam akhir"]);
+    $time3 = array($hasil[2]["jam awal"], $hasil[2]["jam akhir"]);
+    $time4 = array($hasil[3]["jam awal"], $hasil[3]["jam akhir"]);
+    // echo "Current local time: $currentLocalTime\n";
 
-    $kendaraan = $conn->prepare("SELECT * from db_kendaraan WHERE rfid_tag=:rfid_tag");
-    $kendaraan->execute([":rfid_tag" => $uid]);
-
-    if ($kendaraan->rowCount() >= 1) {
-        $dataKendaraan = $kendaraan->fetchAll(PDO::FETCH_ASSOC);
-        // var_dump($dataKendaraan[0]["id_murid"]);
-        $murid = $conn->prepare("SELECT * FROM murid WHERE student_id=:student_id");
-        $murid->execute([":student_id" => $dataKendaraan[0]["id_murid"]]);
-
-        
-        if ($murid->rowCount() >= 1) {
-            $dataMurid = $murid->fetchAll(PDO::FETCH_ASSOC);
-
-            $stmt = $conn->prepare("INSERT INTO tmphistory (UID, id_kendaraan, nama_driver, plat_no, jenis_mobil, nama_murid) Values (:uid, :id_kendaraan, :nama_driver, :plat_no, :jenis_mobil, :nama_murid);");
-            $stmt->execute([":uid" => $uid, ":id_kendaraan" => $dataKendaraan[0]['id'], ":nama_driver" => $dataKendaraan[0]["driver"], ":plat_no" => $dataKendaraan[0]["plat_mobil"], ":jenis_mobil" => $dataKendaraan[0]["jenis_mobil"], ":nama_murid" => $dataMurid[0]["name"]]);
-            echo "tap in berhasil ditambahkan";
+    $uid = $_POST["uid"];
+    // $uid = "50:b7:e4:a4:";
+    $stmt = $conn->prepare("SELECT c.grade,c.student_id from db_kendaraan AS a JOIN murid_to_kendaraan AS b ON a.id = b.id_kendaraan JOIN murid AS c ON b.id_murid = c.student_id WHERE a.rfid_tag = :id");
+    $stmt->execute([":id" => $uid]);
+    $kelas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // var_dump($time4);
+    // echo ($currentLocalTime);
+    // $kelas = $kelas[0];
+    // echo (is_array($kelas));
+    // var_dump($kelas[0]);
+    // echo ($currentLocalTime >= $time4[0]);
+    // $stmt = $conn->prepare("SELECT * FROM history WHERE entry_date BETWEEN concat(current_date(), ' 00:00:00') AND concat(current_date(), ' 23:59:59') AND UID=:uid");
+    // $stmt->execute([":uid" => $randomUID]);
+    // if($stmt->rowCount() < 1){
+    foreach ($kelas as $row) {
+        $valid = false;
+        $grade = $row['grade'];
+        if ($grade >= 1 && $grade <= 3) {
+            if ($currentLocalTime >= reset($time2) && $currentLocalTime <= end($time2)) {
+                $valid = true;
+                $murid_id = $row["student_id"];
+            }
+        } else if ($grade >= 4 && $grade <= 6) {
+            if ($currentLocalTime >= reset($time3) && $currentLocalTime <= end($time3)) {
+                $valid = true;
+                $murid_id = $row["student_id"];
+            }
+        } else if ($grade >= 7 && $grade <= 9) {
+            // echo 'uhuy';
+            if ($currentLocalTime >= reset($time4) && $currentLocalTime <= end($time4)) {
+                $valid = true;
+                $murid_id = $row["student_id"];
+            }
         } else {
-            echo "murid tidak dikenali";
+            if ($currentLocalTime >= reset($time1) && $currentLocalTime <= end($time1)) {
+                $valid = true;
+                $murid_id = $row["student_id"];
+            }
         }
-    } else {
-        // $sql = "INSERT INTO tb_entry (UID) Values ('$uid');";
-        // $conn->exec($sql);
-        echo "Tag tidak dikenali";
+        if ($valid) {
+            $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
+            $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
+            echo "succes";
+        } else {
+            echo "tidak valid";
+        }
+        return;
     }
+    echo "failed";
+    return;
 }
+echo "HARUS MENGGUNAKAN POST";
