@@ -4,9 +4,11 @@ header('Content-Type: application/json');
 
 $grade = isset($_GET["grade"]) ? $_GET["grade"] : 'all';
 
-
-$grade = isset($_GET["grade"]) ? $_GET["grade"] : 'all';
-
+if ($grade == "") {
+    $data["status"] = "invalid"; 
+    echo json_encode($data);
+    return;   
+}
 $sd = array("1", "2", "3", "4", "5", "6");
 $smp = array("7", "8", "9");
 
@@ -56,6 +58,7 @@ $sound = [];
 foreach ($result as $row) {
     $sound[] = $row['sound'];
 }
+$data["status"] = "ok";
 $data["grade"] = $grade;
 $data["sound"] = $sound;
 echo json_encode($data);
