@@ -35,8 +35,7 @@
 
   <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
-      aria-controls="collapseTwo">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-fw fa-car"></i>
       <span>Kendaraan</span>
     </a>
@@ -64,8 +63,7 @@
 
   <!-- Nav Item - Tables -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="./liveview.php" data-toggle="collapse" data-target="#collapseLiveview" aria-expanded="true"
-      aria-controls="collapseLiveview">
+    <a class="nav-link collapsed" href="./liveview.php" data-toggle="collapse" data-target="#collapseLiveview" aria-expanded="true" aria-controls="collapseLiveview">
       <i class="fas fa-fw fa-table"></i>
       <span>Live View</span>
     </a>
@@ -121,7 +119,7 @@
       </div>
       <form id="submit-jam" action="./api/editJam.php" method="POST">
         <div class="modal-body">
-          <select name="select_grade" class="form-select w-100 p-1 mb-2" aria-label="Default select example" required>
+          <select name="select_grade" id="select_hour" class="form-select w-100 p-1 mb-2" aria-label="Default select example" required>
             <option selected disabled value="0">Kelas yang diubah</option>
             <option value="1">TK</option>
             <option value="2">SD 1-3</option>
@@ -148,8 +146,8 @@
   btnEdit.addEventListener("click", () => {
     $("#exampleModal").modal("show");
   });
-  $(document).ready(function () {
-    $("#submit-jam").on("submit", function (e) {
+  $(document).ready(function() {
+    $("#submit-jam").on("submit", function(e) {
       e.preventDefault();
       Swal.fire({
         title: 'Are you sure?',
@@ -186,6 +184,24 @@
           })
         }
       })
+    })
+
+    $("#select_hour").on('change', (e) => {
+      var id = $(e.currentTarget).val();
+      // console.log(id);
+      $.ajax({
+        url: "./api/getHour.php",
+        type: "POST",
+        dataType: "JSON",
+        data: {
+          id: id
+        }
+      }).done((data) => {
+        $("#awal").val(data.awal)
+        $("#akhir").val(data.akhir)
+      }).fail((xhr, status, error) => {
+        console.error("AJAX request failed:", status, error);
+      });
     })
   })
 </script>

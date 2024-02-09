@@ -33,38 +33,41 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     foreach ($kelas as $row) {
         $valid = false;
         $grade = $row['grade'];
-        if ($grade >= 1 && $grade <= 3) {
-            if ($currentLocalTime >= reset($time2) && $currentLocalTime <= end($time2)) {
-                $valid = true;
-                $murid_id = $row["student_id"];
+        $stmt = $conn->prepare("SELECT * FROM `live_view` WHERE murid_id = :murid_id");
+        $stmt->execute([':murid_id' => $row['student_id']]);
+        if ($stmt->rowCount() == 0) {
+            if ($grade >= 1 && $grade <= 3) {
+                if ($currentLocalTime >= reset($time2) && $currentLocalTime <= end($time2)) {
+                    $valid = true;
+                    $murid_id = $row["student_id"];
+                }
+            } else if ($grade >= 4 && $grade <= 6) {
+                if ($currentLocalTime >= reset($time3) && $currentLocalTime <= end($time3)) {
+                    $valid = true;
+                    $murid_id = $row["student_id"];
+                }
+            } else if ($grade >= 7 && $grade <= 9) {
+                // echo 'uhuy';
+                if ($currentLocalTime >= reset($time4) && $currentLocalTime <= end($time4)) {
+                    $valid = true;
+                    $murid_id = $row["student_id"];
+                }
+            } else {
+                if ($currentLocalTime >= reset($time1) && $currentLocalTime <= end($time1)) {
+                    $valid = true;
+                    $murid_id = $row["student_id"];
+                }
             }
-        } else if ($grade >= 4 && $grade <= 6) {
-            if ($currentLocalTime >= reset($time3) && $currentLocalTime <= end($time3)) {
-                $valid = true;
-                $murid_id = $row["student_id"];
-            }
-        } else if ($grade >= 7 && $grade <= 9) {
-            // echo 'uhuy';
-            if ($currentLocalTime >= reset($time4) && $currentLocalTime <= end($time4)) {
-                $valid = true;
-                $murid_id = $row["student_id"];
+            if ($valid) {
+                $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
+                $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
             }
         } else {
-            if ($currentLocalTime >= reset($time1) && $currentLocalTime <= end($time1)) {
-                $valid = true;
-                $murid_id = $row["student_id"];
-            }
+            echo "Already in Table";
         }
-        if ($valid) {
-            $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
-            $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
-            echo "succes";
-        } else {
-            echo "tidak valid";
-        }
-        return;
+        // return;
     }
-    echo "failed";
-    return;
+    // echo "failed";
+    // return;
 }
 echo "HARUS MENGGUNAKAN POST";
