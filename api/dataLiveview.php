@@ -15,9 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Total Data Query SQL Syntax
     $total_data_query = "SELECT COUNT(*) FROM ";
     if ($grade == 'all') {
-        $total_data_query .= "live_view WHERE DATE(entry_date) = CURRENT_DATE";
-
-    } else {
         $total_data_query .= "db_kendaraan AS a
         JOIN murid_to_kendaraan AS b
         ON a.id = b.id_kendaraan
@@ -25,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ON b.id_murid = c.student_id
         JOIN live_view AS d
         ON a.rfid_tag = d.UID
-        WHERE DATE(entry_date) = CURRENT_DATE
-        ";
+        WHERE DATE(entry_date) = CURRENT_DATE";
+
+    } else {
 
         if ($grade == 'sd') {
             $total_data_query .= "AND (c.grade IN (" . implode(',', $sd) . "))";

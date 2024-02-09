@@ -39,6 +39,32 @@
             background-color: #0352A3;
             color: #FFFFFF;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 
     
@@ -90,6 +116,10 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <div class="row justify-content-end px-3 pt-4 pb-2">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#downloadModal">Download Laporan</button>
+                            </div>
                         </div>
                     </div>
 
@@ -119,6 +149,38 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- Modal Download Laporan -->
+    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="rfidModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Download Laporan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="infoModal"></div>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-floating input-group-md mb-3 mx-3">
+                            <label for="start-date">Start Date: </label>
+                            <input type="date" class="form-control" id="start-date" name="start-date">
+                        </div>
+                        <div class="form-floating input-group-md mb-3 mx-3">
+                            <label for="end-date">End Date: </label>
+                            <input type="date" class="form-control" id="end-date" name="end-date">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="downloadBtn">Download</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
@@ -182,6 +244,70 @@
                     }
                 ]
             });
+        });
+
+        // Set current date as max in the input
+        document.getElementById('start-date').setAttribute('max', new Date().toLocaleDateString('fr-ca'));
+        document.getElementById('end-date').setAttribute('max', new Date().toLocaleDateString('fr-ca'));
+
+
+        // Function to download the report
+        function downloadReport(startDate, endDate) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', `./api/downloadLaporan.php?start-date=${startDate}&end-date=${endDate}`, true);
+            xhr.responseType = 'blob';
+
+            // Handling response
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var blob = new Blob([xhr.response], { type: 'application/xls' });
+
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = `Riwayat_Penjemputan_${startDate}-${endDate}.csv`;
+
+                        document.body.appendChild(link);
+
+                        link.click();
+                        document.body.removeChild(link);
+                    } else {
+                        console.error('Error downloading xls');
+                    }
+                }
+            };
+
+            // Send the request
+            xhr.send();
+        }
+
+        // Event listener for download button click
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            var startDate = document.getElementById('start-date').value;
+            var endDate = document.getElementById('end-date').value;
+
+            if(new Date(startDate) <= new Date(endDate)) {
+                if(new Date(startDate) <= new Date() && new Date(endDate) <= new Date()) {
+                    var range = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
+                    console.log(range)
+        
+                    if(0 <= range && range <= 7) {
+                        document.getElementById('infoModal').className += 'alert alert-primary';
+                        document.getElementById('infoModal').textContent = `Downloading report from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}`;
+                        downloadReport(startDate, endDate);
+                    } else {
+                        document.getElementById('infoModal').className += 'alert alert-danger';
+                        document.getElementById('infoModal').textContent = 'Maximum range is a week of report!';
+                    }
+                } else {
+                    document.getElementById('infoModal').className += 'alert alert-warning';
+                    document.getElementById('infoModal').textContent = `Date maximum is current date (${  new Date().toLocaleDateString()})!`;
+                }
+            } else {
+                document.getElementById('infoModal').className += 'alert alert-danger';
+                document.getElementById('infoModal').textContent = `Start Date must be less than End Date!`;
+            }
+
         });
     </script>
 
