@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         }
         // return;
     }
-    echo "failed";
-    return;
+    // echo "failed";
+    // return;
 }
 echo "HARUS MENGGUNAKAN POST";
