@@ -34,6 +34,7 @@ if (isset($_POST['submit'])) {
 
 <body>
 
+    <h1>SISTEM PEMBERITAHAUN SUARA</h1>
     <form method="post">
         <input id="txt" name="txt" type="textbox" />
         <input name="submit" type="submit" name="submit" value="Convert to Speech" />
@@ -42,71 +43,90 @@ if (isset($_POST['submit'])) {
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script>
         //This plays a file, and call a callback once it completed (if a callback is set)
+        $(document).ready(function() {
+        //     console.log("start");
+            var urlParams = new URLSearchParams(window.location.search);
+            var gradeParam = urlParams.get('grade');
 
-        let playSound = false;
-        getSound();
+            
+            let playSound = false;
+            getSound();
+            
 
-        function getSound() {
-            $.ajax({
-            url: "../api/getSound.php",
-            dataType: "json",
-            type: "GET",
-            success: function(data) {
-                // console.log(data["sound"]);
-                var sounds = [];
-                data["sound"].forEach(element => {
-                    sounds.push(new Audio("../sound/" + element));
-                });
+            function getSound() {
+                console.log("get sound");
+                $.ajax({
+                    url: "../api/getSound.php",
+                    dataType: "json",
+                    type: "GET",
+                    data: {
+                        grade: gradeParam,
+                    },
+                    success: function(data) {
+                        console.log(data["sound"]);
+                        var sounds = [];
+                        data["sound"].forEach(element => {
+                            sounds.push(new Audio("../sound/" + element));
+                        });
 
-                console.log(sounds);
-                play_sound_queue(sounds);
+                        console.log(sounds);
+                        play_sound_queue(sounds);
+                    }
+                })
             }
-        })
-        }
-        
 
-        function play(audio, callback) {
-            setTimeout(function() {
-                audio.play();
-                console.log(audio.currentSrc);
-                if (callback) {
-                    //When the audio object completes it's playback, call the callback
-                    //provided      
-                    audio.addEventListener('ended', callback);
-                }
-            }, 2000);
 
-        }
+            function play(audio, callback) {
+                setTimeout(function() {
+                    audio.play();
+                    console.log(audio.currentSrc);
+                    if (callback) {
+                        //When the audio object completes it's playback, call the callback
+                        //provided      
+                        audio.addEventListener('ended', callback);
+                    }
+                }, 2000);
 
-        //Changed the name to better reflect the functionality
-        function play_sound_queue(sounds) {
-            var index = 0;
+            }
 
-            function recursive_play() {
-                //If the index is the last of the table, play the sound
-                //without running a callback after       
-                console.log(index)
-                // console.log(sounds[index].currentSrc);
-                if (index + 1 === sounds.length) {
-                    // console.log(index);
-                    play(sounds[index], function() {
-                        getSound();
-                    });
-                } else {
-                    //Else, play the sound, and when the playing is complete
-                    //increment index by one and play the sound in the 
-                    //indexth position of the array
-                    play(sounds[index], function() {
-                        index++;
+            //Changed the name to better reflect the functionality
+            function play_sound_queue(sounds) {
+                var index = 0;
+
+                function recursive_play() {
+                    //If the index is the last of the table, play the sound
+                    //without running a callback after       
+                    console.log(index)
+                    console.log(gradeParam);
+                    // console.log(sounds[index].currentSrc);
+
+
+                    if (sounds.length == 0) {
+                        console.log("empty");
+                        setTimeout(function() {
+                            getSound();
+                        }, 2000);
+                    } else if (index + 1 === sounds.length) {
                         // console.log(index);
-                        recursive_play();
-                    });
+                        play(sounds[index], function() {
+                            getSound();
+                        });
+                    } else {
+                        //Else, play the sound, and when the playing is complete
+                        //increment index by one and play the sound in the 
+                        //indexth position of the array
+                        play(sounds[index], function() {
+                            index++;
+                            // console.log(index);
+                            recursive_play();
+                        });
+                    }
                 }
-            }
 
-            //Call the recursive_play for the first time
-            recursive_play();
-        }
+                //Call the recursive_play for the first time
+                recursive_play();
+            }
+        });
     </script>
 </body>
 

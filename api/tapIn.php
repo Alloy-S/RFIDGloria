@@ -1,5 +1,6 @@
 <?php
 include("../conn.php");
+include("./sendMessage.php");
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // $uid = array("50:b7:e4:a4:", "ghjkgfaukgf", "coba", "d2:8e:50:96:");
     // $randomUID = $uid[array_rand($uid)];
