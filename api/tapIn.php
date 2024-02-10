@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
                 $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
                 
-                // sendMessage($murid_id, $conn);
+                sendMessage($murid_id, $conn);
 
             } else {
                 echo "$murid_id invalid";
