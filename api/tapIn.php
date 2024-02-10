@@ -1,6 +1,7 @@
 <?php
 include("../conn.php");
-include("./api/sendMessage.php");
+include("./sendMessage.php");
+// echo $_SERVER["REQUEST_METHOD"]; 
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // $uid = array("50:b7:e4:a4:", "ghjkgfaukgf", "coba", "d2:8e:50:96:");
     // $randomUID = $uid[array_rand($uid)];
@@ -34,6 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     foreach ($kelas as $row) {
         $valid = false;
         $grade = $row['grade'];
+        $murid_id = $row['student_id'];
         $stmt = $conn->prepare("SELECT * FROM `live_view` WHERE murid_id = :murid_id");
         $stmt->execute([':murid_id' => $row['student_id']]);
         if ($stmt->rowCount() == 0) {
@@ -63,15 +65,18 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
                 $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
                 
-                sendMessage($studentId, $conn);
+                // sendMessage($murid_id, $conn);
 
+            } else {
+                echo "$murid_id invalid";
             }
         } else {
             echo "Already in Table";
+            return;
         }
-        // return;
+        echo "$murid_id ok";
     }
-    // echo "failed";
-    // return;
+    echo "ok";
+    return;
 }
 echo "HARUS MENGGUNAKAN POST";
