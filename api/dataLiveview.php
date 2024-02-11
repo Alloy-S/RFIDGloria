@@ -15,7 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // Total Data Query SQL Syntax
     $total_data_query = "SELECT COUNT(*) FROM ";
     if ($grade == 'all') {
-        $total_data_query .= "live_view WHERE DATE(entry_date) = CURRENT_DATE";
+        $total_data_query .= "db_kendaraan AS a
+        JOIN murid_to_kendaraan AS b
+        ON a.id = b.id_kendaraan
+        JOIN murid AS c
+        ON b.id_murid = c.student_id
+        JOIN live_view AS d
+        ON a.rfid_tag = d.UID
+        WHERE DATE(d.entry_date) = CURRENT_DATE ";
 
     } else {
         $total_data_query .= "db_kendaraan AS a
@@ -25,9 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ON b.id_murid = c.student_id
         JOIN live_view AS d
         ON a.rfid_tag = d.UID
-        WHERE DATE(entry_date) = CURRENT_DATE
-        ";
-
+        WHERE DATE(d.entry_date) = CURRENT_DATE ";
         if ($grade == 'sd') {
             $total_data_query .= "AND (c.grade IN (" . implode(',', $sd) . "))";
 
@@ -38,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $total_data_query .= "AND ((c.grade NOT IN (" . implode(',', $sd) . ")) AND (c.grade NOT IN (" . implode(',', $smp) . ")))";
         }
     }
+
+    // echo $total_data_query;
 
     $total_data = $conn->query($total_data_query)->fetchColumn();
 
