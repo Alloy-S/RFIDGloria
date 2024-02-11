@@ -77,12 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $data['pesan'] = "Size image maximal 5MB!!";
                 die(json_encode($data));
             }
-            $namabukti = $rfid . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
+            $namabukti = $plat . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
             $fileDestination = "../upload_foto/" . $namabukti;
             if (!(move_uploaded_file($penyimpananFile, $fileDestination))) {
                 $data['pesan'] = "Maaf ada kesalahan, silahkan tunggu beberapa saat";
                 die(json_encode($data));
             }
+            $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `foto`=:foto WHERE id = :id");
+            $stmt->execute([":foto" => $namabukti, ":id" => $id]);
             foreach ($array_murid as $row_murid) {
                 $stmt_cek = $conn->prepare("SELECT * FROM murid WHERE student_id = :student_id");
                 $stmt_cek->execute([":student_id" => $row_murid]);
@@ -132,8 +134,6 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $text = str_replace(" ", "+", $text);
             $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
             file_put_contents($file, $current);
-            $stmt_cek = $conn->prepare("DELETE FROM `murid_to_kendaraan` WHERE id_kendaraan = :id_kendaraan");
-            $stmt_cek->execute([":id_kendaraan" => $id]);
             $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
             $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id, ":sound" => $file]);
             if ($stmt2->rowCount() > 0) {
@@ -150,12 +150,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $data['pesan'] = "Size image maximal 5MB!!";
                 die(json_encode($data));
             }
-            $namabukti = $rfid . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
+            $namabukti = $plat . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
             $fileDestination = "../upload_foto/" . $namabukti;
             if (!(move_uploaded_file($penyimpananFile, $fileDestination))) {
                 $data['pesan'] = "Maaf ada kesalahan, silahkan tunggu beberapa saat";
                 die(json_encode($data));
             }
+            $stmt = $conn->prepare("UPDATE `db_kendaraan` SET `foto`=:foto WHERE id = :id");
+            $stmt->execute([":foto" => $namabukti, ":id" => $id]);
             $stmt_cek = $conn->prepare("SELECT * FROM murid WHERE student_id = :student_id");
             $stmt_cek->execute([":student_id" => $murid]);
             if ($stmt_cek->rowCount() == 0) {
@@ -168,8 +170,6 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $text = str_replace(" ", "+", $text);
             $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
             file_put_contents($file, $current);
-            $stmt_cek = $conn->prepare("DELETE FROM `murid_to_kendaraan` WHERE id_kendaraan = :id_kendaraan");
-            $stmt_cek->execute([":id_kendaraan" => $id]);
             $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
             $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id, ":sound" => $file]);
             if ($stmt2->rowCount() > 0) {
