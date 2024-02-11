@@ -13,9 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $offset = ($page - 1) * $limit;
 
     // Total Data Query SQL Syntax
-    $total_data_query = "SELECT COUNT(*) FROM ";
-    if ($grade == 'all') {
-        $total_data_query .= "live_view AS a
+    $total_data_query = "SELECT COUNT(*) FROM 
+        live_view AS a
         JOIN murid AS b
         ON a.murid_id = b.student_id
         JOIN murid_to_kendaraan AS c
@@ -23,25 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         JOIN db_kendaraan AS d
         ON a.UID = d.rfid_tag
         WHERE DATE(a.entry_date) = CURRENT_DATE ";
+    if ($grade == 'sd') {
+        $total_data_query .= "AND (b.grade IN (" . implode(',', $sd) . "))";
 
-    } else {
-        $total_data_query .= "live_view AS a
-        JOIN murid AS b
-        ON a.murid_id = b.student_id
-        JOIN murid_to_kendaraan AS c
-        ON b.student_id = c.id_murid
-        JOIN db_kendaraan AS d
-        ON a.UID = d.rfid_tag
-        WHERE DATE(a.entry_date) = CURRENT_DATE ";
-        if ($grade == 'sd') {
-            $total_data_query .= "AND (b.grade IN (" . implode(',', $sd) . "))";
+    } elseif ($grade == 'smp') {
+        $total_data_query .= "AND (b.grade IN (" . implode(',', $smp) . "))";
 
-        } elseif ($grade == 'smp') {
-            $total_data_query .= "AND (b.grade IN (" . implode(',', $smp) . "))";
-
-        } else {
-            $total_data_query .= "AND ((b.grade NOT IN (" . implode(',', $sd) . ")) AND (b.grade NOT IN (" . implode(',', $smp) . ")))";
-        }
+    } elseif ($grade == 'tk') {
+        $total_data_query .= "AND ((b.grade NOT IN (" . implode(',', $sd) . ")) AND (b.grade NOT IN (" . implode(',', $smp) . ")))";
     }
 
     // echo $total_data_query;
@@ -77,39 +65,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ON a.UID = d.rfid_tag
         WHERE DATE(a.entry_date) = CURRENT_DATE ";
 
-    if ($grade == 'all') {
+    if ($grade == 'sd') {
         $result_query .= "
-            ORDER BY
-            a.entry_date DESC
-            LIMIT $offset, $limit
-        ;";
-
-    } else {
-        if ($grade == 'sd') {
-            $result_query .= "
-                AND (b.grade IN (" . implode(',', $sd) . "))
-                ORDER BY
-                a.entry_date DESC
-                LIMIT $offset, $limit
-            ;";
-
-        } elseif ($grade == 'smp') {
-            $result_query .= "
-                AND (b.grade IN (" . implode(',', $smp) . "))
-                ORDER BY
-                a.entry_date DESC
-                LIMIT $offset, $limit
-            ;";
-
-        } else {
-            $result_query .= "
-                AND ((b.grade NOT IN (" . implode(',', $sd) . ")) AND (b.grade NOT IN (" . implode(',', $smp) . ")))
-                ORDER BY
-                a.entry_date DESC
-                LIMIT $offset, $limit
-            ;";
-        }
+            AND (b.grade IN (" . implode(',', $sd) . "))";
+            
+    } elseif ($grade == 'smp') {
+        $result_query .= "
+        AND (b.grade IN (" . implode(',', $smp) . "))";
+        
+    } elseif ($grade == 'tk') {
+        $result_query .= "
+        AND ((b.grade NOT IN (" . implode(',', $sd) . ")) AND (b.grade NOT IN (" . implode(',', $smp) . ")))";
     }
+    
+    $result_query .= "
+        ORDER BY
+        a.entry_date DESC
+        LIMIT $offset, $limit
+    ;";
 
     $result = $conn->prepare($result_query);
 
