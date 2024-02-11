@@ -315,7 +315,7 @@
                     var timeDifference = currentTime - lastPageChangeTime;
 
                     // Auto-refresh data every 0.001 second
-                    if (timeDifference >= 1) {
+                    if (timeDifference >= 5000) {
                         table.ajax.reload(null, false);
                     }
 
