@@ -127,6 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     }
                 }
             }
+            $data['pesan'] = "Berhasil mengupdate Database";
+            $data['success'] = true;
+            die(json_encode($data));
         }
         if (in_array(strtolower(end($namaFile)), $allowed_foto)) {
             if ($sizeFile > 5_000_000) {
@@ -172,6 +175,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     }
                 }
             }
+            $data['pesan'] = "Berhasil mengupdate Database";
+            $data['success'] = true;
+            die(json_encode($data));
         } else {
             $data['pesan'] = "Extension file harus berupa 'jpg', 'jpeg', 'png', 'heic' !!!";
             die(json_encode($data));
