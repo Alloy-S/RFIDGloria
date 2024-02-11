@@ -108,7 +108,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $text = "siswa " . $row_murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
-                file_put_contents($file, $current);
+                $filename = "../sound/" . $file;
+                file_put_contents($filename, $current);
                 $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
                 $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $id, ":sound" => $file]);
                 if ($row_murid == $murid_add[count($murid_add) - 1]) {
@@ -156,7 +157,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
-                file_put_contents($file, $current);
+                $filename = "../sound/" . $file;
+                file_put_contents($filename, $current);
                 $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
                 $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $id, ":sound" => $file]);
                 if ($row_murid == $murid_add[count($murid_add) - 1]) {
@@ -196,7 +198,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
-                file_put_contents($file, $current);
+                $filename = "../sound/" . $file;
+                file_put_contents($filename, $current);
                 $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
                 $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id, ":sound" => $file]);
                 if ($stmt2->rowCount() > 0) {
@@ -237,7 +240,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
-                file_put_contents($file, $current);
+                $filename = "../sound/" . $file;
+                file_put_contents($filename, $current);
                 $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
                 $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id, ":sound" => $file]);
                 if ($stmt2->rowCount() > 0) {

@@ -65,7 +65,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $text = "siswa " . $row_murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
-                file_put_contents($file, $current);
+                $filename = "../sound/" . $file;
+                file_put_contents($filename, $current);
 
                 // $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `foto`, `sound`) VALUES (:jenis,:plat,:rfid,:driver,:foto,:sound)");
                 if ($row_murid == $array_murid[0]) {
@@ -101,7 +102,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
             $text = str_replace(" ", "+", $text);
             $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
-            file_put_contents($file, $current);
+            $filename = "../sound/" . $file;
+            file_put_contents($filename, $current);
 
             // $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `foto`, `sound`) VALUES (:jenis,:plat,:rfid,:driver,:foto,:sound)");
             $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `foto`) VALUES (:jenis,:plat,:rfid,:driver,:foto)");
