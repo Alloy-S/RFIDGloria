@@ -1,18 +1,28 @@
 <?php
 require("./conn.php");
 $id = $_GET["id"];
-$stmt = $conn->prepare("SELECT * FROM db_kendaraan AS A JOIN murid_to_kendaraan AS B ON A.id = B.id_kendaraan WHERE A.id = :id");
+$stmt = $conn->prepare("SELECT * FROM murid_to_kendaraan WHERE id_kendaraan = :id");
 $stmt->execute([":id" => $id]);
-$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-if (count($data) == 1) {
-    $murid = $data[0]['id_murid'];
+if ($stmt->rowCount() == 0) {
+    $murid = "";
+    $stmt = $conn->prepare("SELECT * FROM db_kendaraan WHERE id = :id");
+    $stmt->execute([":id" => $id]);
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
-    $murid = $data[0]['id_murid'];
-    array_shift($data);
-    foreach ($data as $row) {
-        $murid .= "," . $row['id_murid'];
+    $stmt = $conn->prepare("SELECT * FROM db_kendaraan AS A JOIN murid_to_kendaraan AS B ON A.id = B.id_kendaraan WHERE A.id = :id");
+    $stmt->execute([":id" => $id]);
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (count($data) == 1) {
+        $murid = $data[0]['id_murid'];
+    } else {
+        $murid = $data[0]['id_murid'];
+        array_shift($data);
+        foreach ($data as $row) {
+            $murid .= "," . $row['id_murid'];
+        }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -110,7 +120,7 @@ if (count($data) == 1) {
             <div class="container-fluid" style="padding-inline:4em;margin-top:6em;">
                 <h1 style="color:#0352A3;font-size:3em;font-weight:bold">Edit Kendaraan</h1>
                 <form id="submit-edit-kendaraan" action="./api/editKendaraan.php" enctype="multipart/form-data" method="POST">
-                    <input type="hidden" value="<?= $data[0]['id_kendaraan'] ?>" name="id">
+                    <input type="hidden" value="<?= $_GET['id'] ?>" name="id">
                     <div class="col-12 mb-3">
                         <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
                         <input type="text" class="form-control" id="jenis_mobil" name="jenis" value="<?= $data[0]['jenis_mobil'] ?>" required>
@@ -121,7 +131,7 @@ if (count($data) == 1) {
                     </div>
                     <div class="col-12 mb-3">
                         <label for="rfid_tag" class="form-label">RFID Tag</label>
-                        <input type="text" class="form-control" id="rfid_tag" name="rfid" value="<?= $data[0]['rfid_tag'] ?>" required>
+                        <input type="text" class="form-control" id="rfid_tag" name="rfid" value="<?= $data[0]['rfid_tag'] ?>" required readonly>
                     </div>
                     <div class="col-12 mb-3">
                         <label for="driver" class="form-label">Driver</label>
