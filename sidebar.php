@@ -61,6 +61,10 @@
       <span>Riwayat Penjemputan</span></a>
   </li>
 
+  <hr class="sidebar-divider" />
+
+  <div class="sidebar-heading">Live View</div>
+
   <!-- Nav Item - Tables -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="./liveview.php" data-toggle="collapse" data-target="#collapseLiveview" aria-expanded="true" aria-controls="collapseLiveview">
@@ -76,6 +80,12 @@
         <a class="collapse-item" href="./liveview.php?grade=smp" target="_blank">SMP</a>
       </div>
     </div>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="./kontrol.php">
+      <i class="fas fa-toggle-on"></i>
+      <span>Kontrol Penjemputan</span></a>
   </li>
 
   <!-- Divider -->
