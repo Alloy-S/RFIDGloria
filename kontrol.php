@@ -93,6 +93,17 @@
                     <h1 style="color:#0352A3;font-size:3em;font-weight:bold" class="h3 mb-3 my-5 text-center">Riwayat Penjemputan</h1>
 
                     <!-- DataTales Example -->
+                    <div class="dropdown mb-4 d-flex justify-content-end">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownFilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            All
+                        </button>
+                        <div class="dropdown-menu animated--fade-in filter" aria-labelledby="dropdownFilter">
+                            <a class="dropdown-item" href="#">All</a>
+                            <a class="dropdown-item" href="#">TK</a>
+                            <a class="dropdown-item" href="#">SD</a>
+                            <a class="dropdown-item" href="#">SMP</a>
+                        </div>
+                    </div>
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
@@ -115,6 +126,7 @@
                             </div>
 
                         </div>
+
                     </div>
 
                 </div>
@@ -146,7 +158,7 @@
 
 
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
+
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
@@ -161,114 +173,132 @@
     <script src="./js/demo/datatables-demo.js"></script>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        var grade = "all";
+        $(document).ready(function() {
+            var table = $('#dataHistory').DataTable({
+                ajax: {
+                    url: "./api/dataLiveview.php",
+                    method: "GET",
+                    data: function(d) {
+                        d.grade = grade;
+                    }
+                },
+                order: ([0, 'asc']),
+                dataSrc: "data",
+                columns: [{
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        'data': "id_murid",
+                    },
+                    {
+                        'data': "kelas",
+                    },
+                    {
+                        'data': "murid",
+                    },
+                    {
+                        'data': "jenis_mobil",
+                    },
+                    {
+                        'data': "plat_mobil",
+                    },
+                    {
+                        'data': "status",
+                    },
+                    {
+                        data: null,
+                        defaultContent: '<div class="d-flex flex-column align-items-center"><button class="btn btn-primary mb-1 complete"><i class="fas fa-check"></i> Complete</button><button class="btn btn-danger remove"><i class="fas fa-trash"></i> Remove</button></div>',
+                        targets: -1
+                    },
+                ],
 
+            });
+
+            table.on('click', '.complete', function(e) {
+                let data = table.row(e.target.closest('tr')).data();
+                console.log(data);
+                $.ajax({
+                    url: "./api/ManualControl.php",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        method: "complete",
+                        id_murid: data["id_murid"],
+                    },
+                    success: function(data) {
+                        if (data == "200") {
+                            console.log("berhasil di proses");
+                            Swal.fire({
+                                title: "Success",
+                                text: "Permintaan berhasil",
+                                icon: "success"
+                            });
+                            table.ajax.reload();
+                        } else {
+                            console.log(data);
+                            Swal.fire({
+                                title: "Failed",
+                                text: "Terjadi kesalahan",
+                                icon: "error"
+                            });
+                        }
+                    },
+
+                });
+                // alert(data["id_murid"] + "'s salary is: " + data["murid"]);
+            });
+
+            table.on('click', '.remove', function(e) {
+                let data = table.row(e.target.closest('tr')).data();
+                $.ajax({
+                    url: "./api/ManualControl.php",
+                    dataType: "json",
+                    type: "POST",
+                    data: {
+                        method: "remove",
+                        id_murid: data["id_murid"],
+                    },
+                    success: function(data) {
+                        if (data == "200") {
+                            console.log("berhasil di proses");
+                            Swal.fire({
+                                title: "Success",
+                                text: "Permintaan berhasil",
+                                icon: "success"
+                            });
+                            table.ajax.reload();
+                        } else {
+                            console.log(data);
+                            Swal.fire({
+                                title: "Failed",
+                                text: "Terjadi kesalahan",
+                                icon: "error"
+                            });
+                        }
+                    },
+
+                });
+                // alert(data["id_murid"] + "'s salary is: " + data["murid"]);
+            });
+
+            $('.filter a.dropdown-item').on('click', function() {
+                // console.log($(this).text());
+                
+                grade = $(this).text().toLowerCase();
+                $("#dropdownFilter").text($(this).text());
+                // console.log(grade);
+                table.ajax.reload();
+
+            });
+        });
+    </script>
 </body>
 
-<script>
-    $(document).ready(function() {
-        var table = $('#dataHistory').DataTable({
-            ajax: "./api/dataLiveview.php",
-            method: "GET",
-            order: ([0, 'asc']),
-            dataSrc: "data",
-            columns: [{
-                    render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
-                    }
-                },
-                {
-                    'data': "id_murid",
-                },
-                {
-                    'data': "kelas",
-                },
-                {
-                    'data': "murid",
-                },
-                {
-                    'data': "jenis_mobil",
-                },
-                {
-                    'data': "plat_mobil",
-                },
-                {
-                    'data': "status",
-                },
-                {
-                    data: null,
-                    defaultContent: '<div class="d-flex flex-column align-items-center"><button class="btn btn-primary mb-1 complete"><i class="fas fa-check"></i> Complete</button><button class="btn btn-danger remove"><i class="fas fa-trash"></i> Remove</button></div>',
-                    targets: -1
-                }
-            ]
-        });
 
-        table.on('click', '.complete', function(e) {
-            let data = table.row(e.target.closest('tr')).data();
-            console.log(data);
-            $.ajax({
-                url: "./api/ManualControl.php",
-                dataType: "json",
-                type: "POST",
-                data: {
-                    method: "complete",
-                    id_murid: data["id_murid"],
-                },
-                success: function(data) {
-                    if (data == "200") {
-                        console.log("berhasil di proses");
-                        Swal.fire({
-                            title: "Success",
-                            text: "Permintaan berhasil",
-                            icon: "success"
-                        });
-                        table.ajax.reload();
-                    } else {
-                        console.log(data);
-                        Swal.fire({
-                            title: "Failed",
-                            text: "Terjadi kesalahan",
-                            icon: "error"
-                        });
-                    }
-                },
-
-            });
-            // alert(data["id_murid"] + "'s salary is: " + data["murid"]);
-        });
-
-        table.on('click', '.remove', function(e) {
-            let data = table.row(e.target.closest('tr')).data();
-            $.ajax({
-                url: "./api/ManualControl.php",
-                dataType: "json",
-                type: "POST",
-                data: {
-                    method: "remove",
-                    id_murid: data["id_murid"],
-                },
-                success: function(data) {
-                    if (data == "200") {
-                        console.log("berhasil di proses");
-                        Swal.fire({
-                            title: "Success",
-                            text: "Permintaan berhasil",
-                            icon: "success"
-                        });
-                        table.ajax.reload();
-                    } else {
-                        console.log(data);
-                        Swal.fire({
-                            title: "Failed",
-                            text: "Terjadi kesalahan",
-                            icon: "error"
-                        });
-                    }
-                },
-
-            });
-            // alert(data["id_murid"] + "'s salary is: " + data["murid"]);
-        });
-    });
-</script>
 
 </html>
