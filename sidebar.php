@@ -61,6 +61,12 @@
       <span>Riwayat Penjemputan</span></a>
   </li>
 
+  <li class="nav-item">
+    <a class="nav-link" href="./murid.php">
+      <i class="fas fa-fw fa-user"></i>
+      <span>List Murid</span></a>
+  </li>
+
   <!-- Nav Item - Tables -->
   <li class="nav-item">
     <a class="nav-link collapsed" href="./liveview.php" data-toggle="collapse" data-target="#collapseLiveview" aria-expanded="true" aria-controls="collapseLiveview">

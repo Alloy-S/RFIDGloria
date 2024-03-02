@@ -39,44 +39,19 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $stmt = $conn->prepare("SELECT * FROM `live_view` WHERE murid_id = :murid_id");
         $stmt->execute([':murid_id' => $row['student_id']]);
         if ($stmt->rowCount() == 0) {
-            if ($grade >= 1 && $grade <= 3) {
-                if ($currentLocalTime >= reset($time2) && $currentLocalTime <= end($time2)) {
-                    $valid = true;
-                    $murid_id = $row["student_id"];
-                }
-            } else if ($grade >= 4 && $grade <= 6) {
-                if ($currentLocalTime >= reset($time3) && $currentLocalTime <= end($time3)) {
-                    $valid = true;
-                    $murid_id = $row["student_id"];
-                }
-            } else if ($grade >= 7 && $grade <= 9) {
-                // echo 'uhuy';
-                if ($currentLocalTime >= reset($time4) && $currentLocalTime <= end($time4)) {
-                    $valid = true;
-                    $murid_id = $row["student_id"];
-                }
-            } else {
-                if ($currentLocalTime >= reset($time1) && $currentLocalTime <= end($time1)) {
-                    $valid = true;
-                    $murid_id = $row["student_id"];
-                }
-            }
-            if ($valid) {
+            $stmt2 = $conn->prepare("SELECT * FROM `history` WHERE student_id = :murid_id AND DATE(tapin_date) = CURDATE()");
+            $stmt2->execute([':murid_id' => $row['student_id']]);
+            if ($stmt2->rowCount() == 0) {
                 $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`) VALUES (:uid,:murid_id)");
                 $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id]);
-                
-                sendMessage($murid_id, $conn);
-
+                echo "Success add to table";
             } else {
-                echo "$murid_id invalid";
+                echo "Already in history";
             }
         } else {
             echo "Already in Table";
-            return;
         }
-        echo "$murid_id ok";
     }
-    echo "ok";
     return;
 }
 echo "HARUS MENGGUNAKAN POST";

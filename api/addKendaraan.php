@@ -74,8 +74,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":foto" => $namabukti]);
                     $insertId = $conn->lastInsertId();
                 }
-                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
-                $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $insertId, ":sound" => $file]);
+                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
+                $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $insertId]);
+                $stmt3 = $conn->prepare("SELECT * FROM sound WHERE student_id = :id AND title = :title");
+                $stmt3->execute([":id" => $row_murid, ":title" => "default"]);
+                if ($stmt3->rowCount() == 0) {
+                    $stmt = $conn->prepare("INSERT INTO `sound`(`student_id`, `sound`) VALUES (:student_id,:sound)");
+                    $stmt->execute([":student_id" => $row_murid, ":sound" => $file]);
+                }
                 if ($stmt2->rowCount() > 0) {
                     // clear rfid
                     $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");
@@ -109,8 +115,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $stmt = $conn->prepare("INSERT INTO `db_kendaraan`(`jenis_mobil`, `plat_mobil`, `rfid_tag`, `driver`, `foto`) VALUES (:jenis,:plat,:rfid,:driver,:foto)");
             $stmt->execute([":jenis" => $jenis, ":plat" => $plat, ":rfid" => $rfid, ":driver" => $driver, ":foto" => $namabukti]);
             $insertId = $conn->lastInsertId();
-            $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
-            $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $insertId, ":sound" => $file]);
+            $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
+            $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $insertId]);
+            $stmt3 = $conn->prepare("SELECT * FROM sound WHERE student_id = :id AND title = :title");
+            $stmt3->execute([":id" => $murid, ":title" => "default"]);
+            if ($stmt3->rowCount() == 0) {
+                $stmt = $conn->prepare("INSERT INTO `sound`(`student_id`, `sound`) VALUES (:student_id,:sound)");
+                $stmt->execute([":student_id" => $murid, ":sound" => $file]);
+            }
             if ($stmt->rowCount() > 0) {
                 // clear rfid
                 $stmt = $conn->prepare("UPDATE tb_entry SET `UID`=:newUID WHERE id=:id");

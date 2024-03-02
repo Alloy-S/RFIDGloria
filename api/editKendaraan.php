@@ -57,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         }
     }
 
+
     // if (count($murid_delete) == 0) {
     //     echo (count($murid_add));
     //     $data['pesan'] = "Tidak ada murid yang ditambahkan";
@@ -110,8 +111,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
                 file_put_contents($filename, $current);
-                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
-                $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $id, ":sound" => $file]);
+                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
+                $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $id]);
+                $stmt3 = $conn->prepare("SELECT * FROM sound WHERE student_id = :id AND title = :title");
+                $stmt3->execute([":id" => $row_murid, ":title" => "default"]);
+                if ($stmt3->rowCount() == 0) {
+                    $stmt = $conn->prepare("INSERT INTO `sound`(`student_id`, `sound`) VALUES (:student_id,:sound)");
+                    $stmt->execute([":student_id" => $row_murid, ":sound" => $file]);
+                }
                 if ($row_murid == $murid_add[count($murid_add) - 1]) {
                     if ($stmt2->rowCount() > 0) {
                         $data['pesan'] = "Berhasil mengupdate Database";
@@ -159,8 +166,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
                 file_put_contents($filename, $current);
-                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
-                $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $id, ":sound" => $file]);
+                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
+                $stmt2->execute([":id_murid" => $row_murid, ":id_kendaraan" => $id]);
+                $stmt3 = $conn->prepare("SELECT * FROM sound WHERE student_id = :id AND title = :title");
+                $stmt3->execute([":id" => $row_murid, ":title" => "default"]);
+                if ($stmt3->rowCount() == 0) {
+                    $stmt = $conn->prepare("INSERT INTO `sound`(`student_id`, `sound`) VALUES (:student_id,:sound)");
+                    $stmt->execute([":student_id" => $row_murid, ":sound" => $file]);
+                }
                 if ($row_murid == $murid_add[count($murid_add) - 1]) {
                     if ($stmt2->rowCount() > 0) {
                         $data['pesan'] = "Berhasil mengupdate Database";
@@ -200,8 +213,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
                 file_put_contents($filename, $current);
-                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
-                $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id, ":sound" => $file]);
+                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
+                $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id]);
+                $stmt3 = $conn->prepare("SELECT * FROM sound WHERE student_id = :id AND title = :title");
+                $stmt3->execute([":id" => $murid, ":title" => "default"]);
+                if ($stmt3->rowCount() == 0) {
+                    $stmt = $conn->prepare("INSERT INTO `sound`(`student_id`, `sound`) VALUES (:student_id,:sound)");
+                    $stmt->execute([":student_id" => $murid, ":sound" => $file]);
+                }
                 if ($stmt2->rowCount() > 0) {
                     $data['pesan'] = "Berhasil mengupdate Database";
                     $data['success'] = true;
@@ -242,8 +261,14 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
                 file_put_contents($filename, $current);
-                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`, `sound`) VALUES (:id_murid,:id_kendaraan,:sound)");
-                $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id, ":sound" => $file]);
+                $stmt2 = $conn->prepare("INSERT INTO `murid_to_kendaraan`(`id_murid`, `id_kendaraan`) VALUES (:id_murid,:id_kendaraan)");
+                $stmt2->execute([":id_murid" => $murid, ":id_kendaraan" => $id]);
+                $stmt3 = $conn->prepare("SELECT * FROM sound WHERE student_id = :id AND title = :title");
+                $stmt3->execute([":id" => $murid, ":title" => "default"]);
+                if ($stmt3->rowCount() == 0) {
+                    $stmt = $conn->prepare("INSERT INTO `sound`(`student_id`, `sound`) VALUES (:student_id,:sound)");
+                    $stmt->execute([":student_id" => $murid, ":sound" => $file]);
+                }
                 if ($stmt2->rowCount() > 0) {
                     $data['pesan'] = "Berhasil mengupdate Database";
                     $data['success'] = true;
