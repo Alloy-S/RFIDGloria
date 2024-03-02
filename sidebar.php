@@ -1,10 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
   <!-- Sidebar - Brand -->
@@ -66,6 +60,9 @@
       <i class="fas fa-fw fa-user"></i>
       <span>List Murid</span></a>
   </li>
+  <hr class="sidebar-divider" />
+
+  <div class="sidebar-heading">Live View</div>
 
   <!-- Nav Item - Tables -->
   <li class="nav-item">
@@ -82,6 +79,12 @@
         <a class="collapse-item" href="./liveview.php?grade=smp" target="_blank">SMP</a>
       </div>
     </div>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="./kontrol.php">
+      <i class="fas fa-toggle-on"></i>
+      <span>Kontrol Penjemputan</span></a>
   </li>
 
   <!-- Divider -->
