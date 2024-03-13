@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ON b.student_id = c.id_murid
         JOIN db_kendaraan AS d
         ON a.UID = d.rfid_tag
+        JOIN jam_operasional AS e
+        ON TIME(CURRENT_TIMESTAMP) BETWEEN e.`jam awal` AND e.`jam akhir`
         WHERE DATE(a.entry_date) = CURRENT_DATE ";
     if ($grade == 'sd') {
         $total_data_query .= "AND (b.grade IN (" . implode(',', $sd) . "))";
@@ -63,6 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ON b.student_id = c.id_murid
         JOIN db_kendaraan AS d
         ON a.UID = d.rfid_tag
+        JOIN jam_operasional AS e
+        ON TIME(CURRENT_TIMESTAMP) BETWEEN e.`jam awal` AND e.`jam akhir`
         WHERE DATE(a.entry_date) = CURRENT_DATE ";
 
     if ($grade == 'sd') {

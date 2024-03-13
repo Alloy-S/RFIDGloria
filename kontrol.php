@@ -90,7 +90,7 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 style="color:#0352A3;font-size:3em;font-weight:bold" class="h3 mb-3 my-5 text-center">Riwayat Penjemputan</h1>
+                    <h1 style="color:#0352A3;font-size:3em;font-weight:bold" class="h3 mb-3 my-5 text-center">Kontrol Penjemputan</h1>
 
                     <!-- DataTales Example -->
                     <div class="dropdown mb-4 d-flex justify-content-end">
@@ -179,8 +179,8 @@
         $(document).ready(function() {
             var table = $('#dataHistory').DataTable({
                 ajax: {
-                    url: "./api/dataLiveview.php",
-                    method: "GET",
+                    url: "./api/dataLiveControl.php",
+                    method: "POST",
                     data: function(d) {
                         d.grade = grade;
                     }

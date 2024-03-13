@@ -56,14 +56,14 @@
             }
         }
 
-        #grade {
+        .grade {
             color: white;
             border: none;
             font-size: 30px;
             font-weight: bold;
         }
 
-        #grade>option {
+        .grade>option {
             font-size: 15px;
         }
     </style>
@@ -92,11 +92,17 @@
                     </a>
                     <h2 style="font-size:3em;font-weight:bold" class="p-5">Tabel Penjemputan Siswa/Siswi</h1>
                         <!-- Opsi Liveview -->
-                        <select name="grade" id="grade" class="bg-gradient-primary" onchange="reloadTable()">
+                        <select name="grade" id="grade" class="bg-gradient-primary grade"">
                             <option value="all" selected>All</option>
                             <option value="tk">TK</option>
                             <option value="sd">SD</option>
                             <option value="smp">SMP</option>
+                        </select>
+                        <select name="duration" id="duration" class="bg-gradient-primary grade ml-2">
+                            <option value="2" selected>2 Sec</option>
+                            <option value="5">5 Sec</option>
+                            <option value="30">30 Sec</option>
+                            <option value="60">1 Min</option>
                         </select>
                 </header>
 
@@ -178,16 +184,26 @@
         // Modifying Selection State for Grade
         var urlParams = new URLSearchParams(window.location.search);
         var gradeParam = urlParams.get('grade');
+        var isPlaying = true;
+        var duration = 2000;
+
+
 
         var selectedGrade = gradeParam || defaultGrade;
+
+        if (localStorage.duration) {
+            var json = JSON.parse(localStorage.duration);
+            duration = json[selectedGrade];
+            $('#duration').val(duration / 1000).change();
+        };
         $('#grade').val(selectedGrade);
 
         let playSound = false;
         getSound();
 
-
         function getSound() {
             console.log("get sound");
+            console.log("duration:" + duration);
             $.ajax({
                 url: "./api/getSound.php",
                 dataType: "json",
@@ -203,22 +219,40 @@
                     });
 
                     console.log(sounds);
+                    // console.log("duration: " + duration);
+                    getDuration();
                     play_sound_queue(sounds);
                 }
             })
         }
 
+        function getDuration() {
+            console.log("duration: " + duration);
+        }
+
 
         function play(audio, callback) {
             setTimeout(function() {
-                audio.play();
+
+                var playAudio = audio.play();
+
+                if (playAudio !== undefined) {
+                    playAudio.then(function() {
+                        // Automatic playback started!
+                    }).catch(function(error) {
+                        console.log(error);
+                        getSound();
+                    });
+                }
+
+
                 console.log(audio.currentSrc);
                 if (callback) {
                     //When the audio object completes it's playback, call the callback
                     //provided      
                     audio.addEventListener('ended', callback);
                 }
-            }, 2000);
+            }, duration);
 
         }
 
@@ -238,7 +272,7 @@
                     console.log("empty");
                     setTimeout(function() {
                         getSound();
-                    }, 2000);
+                    }, duration);
                 } else if (index + 1 === sounds.length) {
                     // console.log(index);
                     play(sounds[index], function() {
@@ -345,21 +379,69 @@
 
             }
         });
+
+        $('#duration').on('change', function() {
+            console.log($(this).val());
+
+            var selectedGrade = $('#grade').val();
+
+            var defaultDuration = {
+                all: 1000,
+                tk: 1000,
+                sd: 1000,
+                smp: 1000,
+            };
+
+            if (localStorage.duration) {
+                var json = JSON.parse(localStorage.duration);
+
+                switch (selectedGrade) {
+                    case 'all':
+                        json['all'] = $(this).val() * 1000;
+                        break;
+                    case 'tk':
+                        json['tk'] = $(this).val() * 1000;
+                        break;
+                    case 'sd':
+                        json['sd'] = $(this).val() * 1000;
+                        break;
+                    case 'smp':
+                        json['smp'] = $(this).val() * 1000;
+                        break;
+                }
+                duration = $(this).val() * 1000;
+                localStorage.duration = JSON.stringify(json);
+            } else {
+                localStorage.duration = JSON.stringify(defaultDuration);
+            }
+            // console.log(localStorage.duration);
+            getDuration();
+        });
+
+        $('#grade').on('change', function() {
+            var selectedGrade = $('#grade').val();
+
+            if (localStorage.duration) {
+                var json = JSON.parse(localStorage.duration);
+                duration = json[selectedGrade];
+                $('#duration').val(duration / 1000).change();
+            };
+
+            // console.log("after change, duration: " + duration);
+            getDuration();
+
+
+            // Update the URL in the address bar
+            var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?grade=' + selectedGrade;
+            window.history.pushState({
+                path: newUrl
+            }, '', newUrl);
+
+            // Reset DataTable with page=1
+            page = 1;
+            
+        })
     });
-
-    function reloadTable() {
-        var selectedGrade = $('#grade').val();
-
-        // Update the URL in the address bar
-        var newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?grade=' + selectedGrade;
-        window.history.pushState({
-            path: newUrl
-        }, '', newUrl);
-
-        // Reset DataTable with page=1
-        page = 1;
-        reloadTable
-    }
 </script>
 
 </html>
