@@ -25,7 +25,7 @@ if ($stmt->rowCount() > 0) {
 }
 
 
-$result_query = "SELECT murid.sound FROM live_view AS live INNER JOIN sound AS murid ON live.murid_id=murid.student_id JOIN murid AS siswa ON murid.student_id=siswa.student_id";
+$result_query = "SELECT murid.sound FROM live_view AS live INNER JOIN sound AS murid ON live.murid_id=murid.student_id";
 
 
 if ($grade == 'all') {
@@ -37,19 +37,19 @@ if ($grade == 'all') {
 } else {
     if ($grade == 'sd') {
         $result_query .= "
-            AND ((siswa.grade IN (" . implode(',', $sd) . ")) AND (murid.title = '" . $title . "'))
+            AND ((live.grade IN (" . implode(',', $sd) . ")) AND (murid.title = '" . $title . "'))
             ORDER BY
             live.entry_date DESC
         ";
     } elseif ($grade == 'smp') {
         $result_query .= "
-            AND ((siswa.grade IN (" . implode(',', $smp) . ")) AND (murid.title = '" . $title . "'))
+            AND ((live.grade IN (" . implode(',', $smp) . ")) AND (murid.title = '" . $title . "'))
             ORDER BY
             live.entry_date DESC
         ";
     } else {
         $result_query .= "
-            AND ((siswa.grade NOT IN (" . implode(',', $sd) . ")) AND (siswa.grade NOT IN (" . implode(',', $smp) . ")) AND (murid.title = '" . $title . "'))
+            AND ((live.grade NOT IN (" . implode(',', $sd) . ")) AND (live.grade NOT IN (" . implode(',', $smp) . ")) AND (murid.title = '" . $title . "'))
             ORDER BY
             live.entry_date DESC
         ";

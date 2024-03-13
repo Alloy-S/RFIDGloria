@@ -64,15 +64,16 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     } else {
                         header('Content-Type: application/json');
 
-                        $class = $responseData['grade'] . " " . $responseData['class'];
+                        $class = $responseData['class'];
+                        $grade = $responseData['grade'];
                         $name = $responseData['name'];
 
                         // echo json_encode(array('class' => $class, 'name' => $name));
                     }
                 }
 
-                $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`,`class`,`student_name`) VALUES (:uid,:murid_id,:class,:name)");
-                $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id, ":class" => $class, ":name" => $name]);
+                $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`,`class`,`grade`,`student_name`) VALUES (:uid,:murid_id,:class,:grade,:name)");
+                $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id, ":class" => $class, ":grade" => $grade, ":name" => $name]);
                 echo "Success add to table";
             } else {
                 echo "Already in history";
