@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     $stmt = $conn->prepare("SELECT b.id_murid from db_kendaraan AS a JOIN murid_to_kendaraan AS b ON a.id = b.id_kendaraan WHERE a.rfid_tag = :id");
     $stmt->execute([":id" => $uid]);
     $kelas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // echo json_encode($kelas);
     // var_dump($time4);
     // echo ($currentLocalTime);
     // $kelas = $kelas[0];
@@ -37,11 +38,12 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
         $murid_id = $row['id_murid'];
         $stmt = $conn->prepare("SELECT * FROM `live_view` WHERE murid_id = :murid_id");
         $stmt->execute([':murid_id' => $murid_id]);
+        echo $stmt->rowCount();
         if ($stmt->rowCount() == 0) {
             $stmt2 = $conn->prepare("SELECT * FROM `history` WHERE student_id = :murid_id AND DATE(tapin_date) = CURDATE()");
             $stmt2->execute([':murid_id' => $murid_id]);
             if ($stmt2->rowCount() == 0) {
-                $url = 'http://localhost:8080/rfid_gloria/RFIDGloria/api/getMurid.php';
+                $url = 'http://localhost/RFIDGloria/api/getMurid.php';
 
                 $data = array(
                     'id' => $murid_id
@@ -57,24 +59,29 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 if ($response === false) {
                     echo json_encode(array('error' => 'Curl error: ' . curl_error($curl)));
                 } else {
+                    
                     $responseData = json_decode($response, true);
+                    
 
                     if ($responseData === null) {
                         echo json_encode(array('error' => 'Error decoding JSON response'));
+                        
                     } else {
                         header('Content-Type: application/json');
 
                         $class = $responseData['class'];
                         $grade = $responseData['grade'];
                         $name = $responseData['name'];
+                        $studentRfid = $responseData['rfid_card'];
+
+                        $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`,`class`,`grade`,`student_name`, `student_rfid`) VALUES (:uid,:murid_id,:class,:grade,:name,:studentRfid)");
+                        $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id, ":class" => $class, ":grade" => $grade, ":name" => $name, ":studentRfid" => $studentRfid]);
+                        echo "Success add to table";
 
                         // echo json_encode(array('class' => $class, 'name' => $name));
                     }
                 }
-
-                $stmt = $conn->prepare("INSERT INTO `live_view`(`UID`,`murid_id`,`class`,`grade`,`student_name`) VALUES (:uid,:murid_id,:class,:grade,:name)");
-                $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id, ":class" => $class, ":grade" => $grade, ":name" => $name]);
-                echo "Success add to table";
+                
             } else {
                 echo "Already in history";
             }

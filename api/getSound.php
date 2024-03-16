@@ -67,9 +67,10 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $sound = [];
 foreach ($result as $row) {
-    $sound[] = $row['sound'];
+    // $sound = $row['sound'];
+    array_push($sound, $row['sound']);
 }
 $data["status"] = "ok";
 $data["grade"] = $grade;
 $data["sound"] = $sound;
-echo json_encode($result);
+echo json_encode($data);
