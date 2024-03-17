@@ -92,6 +92,27 @@
                     <!-- Page Heading -->
                     <h1 style="color:#0352A3;font-size:3em;font-weight:bold" class="h3 mb-3 my-5 text-center">Riwayat Penjemputan</h1>
 
+
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <form action="">
+                                <div id="infoSection"></div>
+                                <div class="row">
+                                    <div class="col-12 form-floating input-group-md mb-3 px-3">
+                                        <label for="start-date">Start Date: </label>
+                                        <input type="date" class="form-control" id="start-date" name="start-date">
+                                    </div>
+                                    <div class="col-12 form-floating input-group-md mb-3 px-3">
+                                        <label for="end-date">End Date: </label>
+                                        <input type="date" class="form-control" id="end-date" name="end-date">
+                                    </div>
+                                    <button type="button" class="col-1 btn btn-primary mt-3 mx-3" id="showHistoryBtn">Send</button>
+                                </div>
+                            </form>
+                            <div class="alert alert-info mt-4 mx-1 mb-0">Maximum range of history data to be shown is 7 days</div>
+                        </div>
+                    </div>
+
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
@@ -117,9 +138,7 @@
                                 </table>
                             </div>
 
-                            <div class="row justify-content-end px-3 pt-4 pb-2">
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#downloadModal">Download Laporan</button>
-                            </div>
+                            <div class="row justify-content-end px-3 pt-4 pb-2" id="downloadLaporanButton"></div>
                         </div>
                     </div>
 
@@ -150,38 +169,6 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Modal Download Laporan -->
-    <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="rfidModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Download Laporan</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="infoModal"></div>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-floating input-group-md mb-3 mx-3">
-                            <label for="start-date">Start Date: </label>
-                            <input type="date" class="form-control" id="start-date" name="start-date">
-                        </div>
-                        <div class="form-floating input-group-md mb-3 mx-3">
-                            <label for="end-date">End Date: </label>
-                            <input type="date" class="form-control" id="end-date" name="end-date">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="downloadBtn">Download</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -201,114 +188,167 @@
 </body>
 
 <script>
-        $(document).ready(function() {
-            var table = $('#dataHistory').DataTable({
-                ajax: "./api/dataHistory.php",
-                method: "GET",
-                order: ([0, 'asc']),
-                dataSrc: "data",
-                columns: [{
-                        render: function(data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1;
-                        }
-                    },
-                    {
-                        'data': "student_id",
-                    },
-                    {
-                        'data': "nama_siswa",
-                    },
-                    {
-                        'data': "grade",
-                    },
-                    {
-                        'data': "class",
-                    },
-                    {
-                        'data': 'rfid_tag'
-                    },
-                    {
-                        'data': "plat_mobil",
-                    },
-                    {
-                        'data': "jenis_mobil"
-                    },
-                    {
-                        'data': "driver"
-                    },
-                    {
-                        'data': "tapin_date"
-                    },
-                    {
-                        'data': "tapout_date"
-                    }
-                ]
-            });
-        });
+    $(document).ready(function() {
+            var table;
+            var buttonAdded = false;
 
-        // Set current date as max in the input
-        document.getElementById('start-date').setAttribute('max', new Date().toLocaleDateString('fr-ca'));
-        document.getElementById('end-date').setAttribute('max', new Date().toLocaleDateString('fr-ca'));
-
-
-        // Function to download the report
-        function downloadReport(startDate, endDate) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', `./api/downloadLaporan.php?start-date=${startDate}&end-date=${endDate}`, true);
-            xhr.responseType = 'blob';
-
-            // Handling response
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        var blob = new Blob([xhr.response], { type: 'application/xls' });
-
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = `Riwayat_Penjemputan_${startDate}-${endDate}.csv`;
-
-                        document.body.appendChild(link);
-
-                        link.click();
-                        document.body.removeChild(link);
-                    } else {
-                        console.error('Error downloading xls');
-                    }
+            function destroyDataTable() {
+                if ($.fn.DataTable.isDataTable('#dataHistory')) {
+                    $('#dataHistory').DataTable().destroy();
                 }
-            };
-
-            // Send the request
-            xhr.send();
-        }
-
-        // Event listener for download button click
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            var startDate = document.getElementById('start-date').value;
-            var endDate = document.getElementById('end-date').value;
-
-            if(new Date(startDate) <= new Date(endDate)) {
-                if(new Date(startDate) <= new Date() && new Date(endDate) <= new Date()) {
-                    var range = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
-                    console.log(range)
-        
-                    if(0 <= range && range <= 7) {
-                        document.getElementById('infoModal').className += 'alert alert-primary';
-                        document.getElementById('infoModal').textContent = `Downloading report from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}`;
-                        downloadReport(startDate, endDate);
-                    } else {
-                        document.getElementById('infoModal').className += 'alert alert-danger';
-                        document.getElementById('infoModal').textContent = 'Maximum range is a week of report!';
-                    }
-                } else {
-                    document.getElementById('infoModal').className += 'alert alert-warning';
-                    document.getElementById('infoModal').textContent = `Date maximum is current date (${  new Date().toLocaleDateString()})!`;
-                }
-            } else {
-                document.getElementById('infoModal').className += 'alert alert-danger';
-                document.getElementById('infoModal').textContent = `Start Date must be less than End Date!`;
             }
 
-        });
+            function initializeDataTable(data) {
+                table = $('#dataHistory').DataTable({
+                data: data,
+                order: ([0, 'asc']),
+                columns: [{
+                            render: function(data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        },
+                        {
+                            'data': "student_id",
+                        },
+                        {
+                            'data': "nama_siswa",
+                        },
+                        {
+                            'data': "grade",
+                        },
+                        {
+                            'data': "class",
+                        },
+                        {
+                            'data': 'rfid_tag'
+                        },
+                        {
+                            'data': "plat_mobil",
+                        },
+                        {
+                            'data': "jenis_mobil"
+                        },
+                        {
+                            'data': "driver"
+                        },
+                        {
+                            'data': "tapin_date"
+                        },
+                        {
+                            'data': "tapout_date"
+                        }
+                    ],
+                    // Event listener for when the data is loaded
+                    initComplete: function(settings, json) {
+                        var dataCount = table.rows().count();
+                    }
+                });
+            }
+
+            function showHistory(startDate, endDate) {
+                // Destroy existing DataTable instance
+                destroyDataTable();
+
+                // Fetch data from API and initialize DataTable
+                $.ajax({
+                    url: './api/dataHistory.php',
+                    method: 'GET',
+                    data: {
+                        startDate: startDate,
+                        endDate: endDate
+                    },
+                    success: function(response) {
+                        // Check if data is available
+                        if (response && response.data) {
+                            // Initialize DataTable with fetched data
+                            initializeDataTable(response.data);
+                        } else {
+                            console.error('No data available');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
+
+            // Set current date as max in the input
+            document.getElementById('start-date').setAttribute('max', new Date().toLocaleDateString('fr-ca'));
+            document.getElementById('end-date').setAttribute('max', new Date().toLocaleDateString('fr-ca'));
+    
+    
+            // Function to download the report
+            function downloadReport(startDate, endDate) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', `./api/downloadLaporan.php?start-date=${startDate}&end-date=${endDate}`, true);
+                xhr.responseType = 'blob';
+    
+                // Handling response
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            var blob = new Blob([xhr.response], { type: 'application/xls' });
+    
+                            var link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = `Riwayat_Penjemputan_${startDate}-${endDate}.csv`;
+    
+                            document.body.appendChild(link);
+    
+                            link.click();
+                            document.body.removeChild(link);
+                        } else {
+                            console.error('Error downloading xls');
+                        }
+                    }
+                };
+    
+                // Send the request
+                xhr.send();
+            }
+
+            // Event listener for show history button click
+            $('#showHistoryBtn').click(function() {
+                var startDate = document.getElementById('start-date').value;
+                var endDate = document.getElementById('end-date').value;
+                
+                if(new Date(startDate) <= new Date(endDate)) {
+                    if(new Date(startDate) <= new Date() && new Date(endDate) <= new Date()) {
+                        var range = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
+                        console.log(range)
+            
+                        if(0 <= range && range <= 7) {
+                            showHistory(startDate, endDate);
+                            if (!buttonAdded && dataCount > 0) {
+                                $('#downloadLaporanButton').append('<button class="btn btn-primary" id="downloadBtn">Download Laporan</button>');
+                                buttonAdded = true;
+                            }
+
+                            // Event listener for download button click
+                            $('#downloadBtn').click(function() {
+                                var startDate = document.getElementById('start-date').value;
+                                var endDate = document.getElementById('end-date').value;
+                                
+                                downloadReport(startDate, endDate)
+                                
+                            });
+                        } else {
+                            document.getElementById('infoSection').className += 'alert alert-danger';
+                            document.getElementById('infoSection').textContent = 'Maximum range is a week of report!';
+                        }
+                    } else {
+                        document.getElementById('infoSection').className += 'alert alert-warning';
+                        document.getElementById('infoSection').textContent = `Date maximum is current date (${  new Date().toLocaleDateString()})!`;
+                    }
+                } else {
+                    document.getElementById('infoSection').className += 'alert alert-danger';
+                    document.getElementById('infoSection').textContent = `Start Date must be less than End Date!`;
+                }
+                
+            });
+            
+            
+    });
     </script>
 
 </html>
