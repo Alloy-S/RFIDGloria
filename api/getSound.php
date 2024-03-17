@@ -21,7 +21,15 @@ if ($stmt->rowCount() > 0) {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $title = $result['title'];
 } else {
-    $title = "default";
+    $currentDayName = date("l");
+    $queryCurrent = "SELECT * FROM sound WHERE title == :title";
+    $stmt = $conn->prepare($queryCurrent);
+    $stmt->execute([":title" => $currentDayName]);
+    if ($stmt->rowCount() > 0) {
+        $title = $currentDayName;
+    } else {
+        $title = "default";
+    }
 }
 
 

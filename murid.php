@@ -108,12 +108,23 @@ require("./conn.php");
                         <div class="modal-body" id="modal-body-sound">
                             <label for="student_id">Student id</label>
                             <input type="text" class="form-control mb-3" id="student_id" name="student_id" readonly>
-                            <label for="title_sound">Title</label>
-                            <input type="text" class="form-control mb-3" id="title_sound" name="title_sound" required>
+                            <div class="form-group">
+                                <label for="type">Type</label>
+                                <select class="form-control" name="type" id="type">
+                                    <option selected value="0">One Event</option>
+                                    <option value="1">Weekly</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="title">
+                                <label for="title_sound">Title</label>
+                                <input type="text" class="form-control mb-3" id="title_sound" name="title_sound" required>
+                            </div>
                             <label for="suara">Sound</label>
                             <input type="text" class="form-control mb-3" id="suara" name="suara" required>
-                            <label for="suara">Date used</label>
-                            <input type="date" class="form-control mb-3" id="date" name="date" required>
+                            <div class="form-group" id="date-div">
+                                <label for="suara">Date used</label>
+                                <input type="date" class="form-control mb-3" id="date" name="date" required>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -194,6 +205,18 @@ require("./conn.php");
 
 <script>
     $(document).ready(function() {
+        const day = `
+                    <label for="title_sound">Title</label>
+                    <select class="form-control" name="title_sound" id="title_sound">
+                        <option selected value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                    </select>`
+        const event = `<label for="title_sound">Title</label>
+                       <input type="text" class="form-control mb-3" id="title_sound" name="title_sound" required>`
         var table = $('#dataSiswa').DataTable({
             ajax: "./api/dataSiswa.php",
             method: "GET",
@@ -241,8 +264,21 @@ require("./conn.php");
             $('#modalAddSound').modal('show');
         })
 
-        $("#submit-sound").on("submit", function(e) {
-            console.log('check')
+        $(document).on("change", "#type", function() {
+            var selectedOption = $(this).val();
+            if (selectedOption == "0") {
+                $('#title').html(event)
+                $('#date-div').show()
+                $('#date').prop('required', true)
+            } else {
+                $('#title').html(day)
+                $('#date-div').hide()
+                $('#date').prop('required', false)
+            }
+            // console.log("Selected option: " + selectedOption);
+        });
+        $(document).on("submit", "#submit-sound", function(e) {
+            console.log("uhuy")
             e.preventDefault();
             $.ajax({
                 url: "./api/addSound.php",
@@ -269,7 +305,11 @@ require("./conn.php");
                     })
                 }
             })
-        })
+        });
+        // $("#submit-sound").on("submit", function(e) {
+        //     console.log('check')
+
+        // })
     })
 
     function checkSound(data) {
@@ -294,16 +334,40 @@ require("./conn.php");
             }
         }).done((data) => {
             var li = ''
+            var dayArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
             data.data.forEach(element => {
                 if (element.title == "default") {
                     li += `<li class="d-flex justify-content-between" style="color: #000000;">${element.title}</li> <hr>`
+                } else if (dayArray.includes(element.title)) {
+                    li += `<li class="d-flex justify-content-between align-items-center" style="color: #000000;">${element.title} (Weekly)<button class="btn btn-danger" onclick="deleteSound('${element.id}', '${idMurid}')">Delete</button></li> <hr>`
                 } else {
-                    li += `<li class="d-flex justify-content-between align-items-center" style="color: #000000;">${element.title} (${element.date})<button class="btn btn-danger" onclick="deleteSound('${element.id}', '${idMurid}')">Delete</button></li> <hr>`
+                    li += `<li class="d-flex justify-content-between align-items-center" style="color: #000000;">${element.title} (${formatDateToIndonesian(element.date)})<button class="btn btn-danger" onclick="deleteSound('${element.id}', '${idMurid}')">Delete</button></li> <hr>`
                 }
             });
             ul.html(li)
             modalMurid.modal('show');
         })
+    }
+
+    function formatDateToIndonesian(dateString) {
+        // Create a new Date object from the dateString
+        var date = new Date(dateString);
+
+        // Extract day, month, and year from the date object
+        var day = date.getDate();
+        var month = date.getMonth() + 1; // Month starts from 0, so add 1
+        var year = date.getFullYear();
+
+        // Pad single-digit day and month with leading zeros if needed
+        if (day < 10) {
+            day = '0' + day;
+        }
+        if (month < 10) {
+            month = '0' + month;
+        }
+
+        // Concatenate the formatted date with hyphens
+        return day + '-' + month + '-' + year;
     }
 
     function deleteSound(id, data) {

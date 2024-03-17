@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $stmt2->execute([':murid_id' => $murid_id]);
             if ($stmt2->rowCount() == 0) {
                 $url = 'http://localhost/RFIDGloria/api/getMurid.php';
+                // $url = 'http://localhost:8080/rfid_gloria/RFIDGloria/api/getMurid.php';
 
                 $data = array(
                     'id' => $murid_id
@@ -59,13 +60,12 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 if ($response === false) {
                     echo json_encode(array('error' => 'Curl error: ' . curl_error($curl)));
                 } else {
-                    
+
                     $responseData = json_decode($response, true);
-                    
+
 
                     if ($responseData === null) {
                         echo json_encode(array('error' => 'Error decoding JSON response'));
-                        
                     } else {
                         header('Content-Type: application/json');
 
@@ -81,7 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                         // echo json_encode(array('class' => $class, 'name' => $name));
                     }
                 }
-                
             } else {
                 echo "Already in history";
             }
