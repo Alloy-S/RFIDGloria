@@ -298,7 +298,7 @@
         var table = $('#dataLiveview').DataTable({
             ajax: {
                 url: "./api/dataLiveview.php",
-                method: "GET",
+                method: "POST",
                 data: function(d) {
                     // Send the current page as a parameter
                     d.page = page;
