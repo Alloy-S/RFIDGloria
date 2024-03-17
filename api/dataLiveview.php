@@ -13,25 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $offset = ($page - 1) * $limit;
 
     // Total Data Query SQL Syntax
-    $total_data_query = "SELECT COUNT(*) FROM 
+    $total_data_query = "SELECT COUNT(*) FROM
         live_view AS a
-        JOIN murid AS b
-        ON a.murid_id = b.student_id
-        JOIN murid_to_kendaraan AS c
-        ON b.student_id = c.id_murid
-        JOIN db_kendaraan AS d
-        ON a.UID = d.rfid_tag
+        JOIN db_kendaraan AS b
+        ON a.UID = b.rfid_tag
         JOIN jam_operasional AS e
         ON TIME(CURRENT_TIMESTAMP) BETWEEN e.`jam awal` AND e.`jam akhir`
+        AND TIME(a.entry_date) BETWEEN e.`jam awal` AND e.`jam akhir`
         WHERE DATE(a.entry_date) = CURRENT_DATE ";
     if ($grade == 'sd') {
-        $total_data_query .= "AND (b.grade IN (" . implode(',', $sd) . "))";
+        $total_data_query .= "AND (a.grade IN (" . implode(',', $sd) . "))";
 
     } elseif ($grade == 'smp') {
-        $total_data_query .= "AND (b.grade IN (" . implode(',', $smp) . "))";
+        $total_data_query .= "AND (a.grade IN (" . implode(',', $smp) . "))";
 
     } elseif ($grade == 'tk') {
-        $total_data_query .= "AND ((b.grade NOT IN (" . implode(',', $sd) . ")) AND (b.grade NOT IN (" . implode(',', $smp) . ")))";
+        $total_data_query .= "AND ((a.grade NOT IN (" . implode(',', $sd) . ")) AND (a.grade NOT IN (" . implode(',', $smp) . ")))";
     }
 
     // echo $total_data_query;
@@ -45,11 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     // Result data SQL Query Syntax
     $result_query = "SELECT
-    b.student_id AS id_murid,
-    CONCAT(b.grade,' ',b.class) AS kelas,
-    b.name AS murid,
-    d.jenis_mobil AS jenis_mobil,
-    d.plat_mobil AS plat_mobil,
+    a.murid_id AS id_murid,
+    CONCAT(a.grade,' ',a.class) AS kelas,
+    a.student_name AS murid,
+    b.jenis_mobil AS jenis_mobil,
+    b.plat_mobil AS plat_mobil,
     (CASE
         WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(a.entry_date) < 60 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(a.entry_date))), ' second')
         WHEN UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(a.entry_date) >= 60 AND UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(a.entry_date) < 3600 THEN CONCAT('Waiting for ', FLOOR((UNIX_TIMESTAMP(CURRENT_TIMESTAMP) - UNIX_TIMESTAMP(a.entry_date)) / 60), ' minute')
@@ -57,29 +54,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         ELSE 'Has arrived'
     END
     ) AS status
-    FROM 
+    FROM
         live_view AS a
-        JOIN murid AS b
-        ON a.murid_id = b.student_id
-        JOIN murid_to_kendaraan AS c
-        ON b.student_id = c.id_murid
-        JOIN db_kendaraan AS d
-        ON a.UID = d.rfid_tag
+        JOIN db_kendaraan AS b
+        ON a.UID = b.rfid_tag
         JOIN jam_operasional AS e
         ON TIME(CURRENT_TIMESTAMP) BETWEEN e.`jam awal` AND e.`jam akhir`
+        AND TIME(a.entry_date) BETWEEN e.`jam awal` AND e.`jam akhir`
         WHERE DATE(a.entry_date) = CURRENT_DATE ";
 
     if ($grade == 'sd') {
         $result_query .= "
-            AND (b.grade IN (" . implode(',', $sd) . "))";
+            AND (a.grade IN (" . implode(',', $sd) . "))";
             
     } elseif ($grade == 'smp') {
         $result_query .= "
-        AND (b.grade IN (" . implode(',', $smp) . "))";
+        AND (a.grade IN (" . implode(',', $smp) . "))";
         
     } elseif ($grade == 'tk') {
         $result_query .= "
-        AND ((b.grade NOT IN (" . implode(',', $sd) . ")) AND (b.grade NOT IN (" . implode(',', $smp) . ")))";
+        AND ((a.grade NOT IN (" . implode(',', $sd) . ")) AND (a.grade NOT IN (" . implode(',', $smp) . ")))";
     }
     
     $result_query .= "
