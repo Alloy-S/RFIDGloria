@@ -338,6 +338,8 @@
                         var range = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
             
                         if(0 <= range && range <= 7) {
+                            document.getElementById('infoSection').className = '';
+                            document.getElementById('infoSection').textContent = '';
                             showHistory(startDate, endDate);
 
                         } else {
@@ -349,8 +351,13 @@
                         document.getElementById('infoSection').textContent = `Date maximum is current date (${  new Date().toLocaleDateString()})!`;
                     }
                 } else {
-                    document.getElementById('infoSection').className += 'alert alert-danger';
-                    document.getElementById('infoSection').textContent = `Start Date must be less than End Date!`;
+                    if (startDate == '' && endDate == '') {
+                        document.getElementById('infoSection').className += 'alert alert-warning';
+                        document.getElementById('infoSection').textContent = `Input Start Date and End Date!`;
+                    } else {
+                        document.getElementById('infoSection').className += 'alert alert-danger';
+                        document.getElementById('infoSection').textContent = `Start Date must be less than End Date!`;
+                    }
                 }
                 
             });

@@ -3,7 +3,7 @@ include("../conn.php");
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $startDate = isset($_GET["startDate"]) ? $_GET["startDate"] : '1970-01-01';
+    $startDate = isset($_GET["startDate"]) ? $_GET["startDate"] : date("Y-m-d");
     $endDate = isset($_GET["endDate"]) ? $_GET["endDate"] : $startDate;
     $query = "SELECT student_id, nama_siswa, grade, class, rfid_tag, plat_mobil, jenis_mobil, driver, tapin_date, tapout_date
     FROM history
