@@ -190,6 +190,7 @@
 <script>
     $(document).ready(function() {
             var table;
+            var dataCount = 0;
             var buttonAdded = false;
 
             function destroyDataTable() {
@@ -237,11 +238,7 @@
                         {
                             'data': "tapout_date"
                         }
-                    ],
-                    // Event listener for when the data is loaded
-                    initComplete: function(settings, json) {
-                        var dataCount = table.rows().count();
-                    }
+                    ]
                 });
             }
 
@@ -262,6 +259,30 @@
                         if (response && response.data) {
                             // Initialize DataTable with fetched data
                             initializeDataTable(response.data);
+                            
+                            // Count data
+                            dataCount = table.rows().count();
+                            
+                            // Add or remove download button based on dataCount
+                            if (dataCount > 0) {
+                                if (!buttonAdded) {
+                                    $('#downloadLaporanButton').append('<button class="btn btn-primary" id="downloadBtn">Download Laporan</button>');
+                                    buttonAdded = true;
+                                }
+                            } else {
+                                $('#downloadBtn').remove(); // Remove the download button
+                                buttonAdded = false;
+                            }
+
+                            // Event listener for download button click
+                            $('#downloadBtn').click(function() {
+                                var startDate = document.getElementById('start-date').value;
+                                var endDate = document.getElementById('end-date').value;
+                                
+                                downloadReport(startDate, endDate)
+                                
+                            });
+                            
                         } else {
                             console.error('No data available');
                         }
@@ -315,23 +336,10 @@
                 if(new Date(startDate) <= new Date(endDate)) {
                     if(new Date(startDate) <= new Date() && new Date(endDate) <= new Date()) {
                         var range = Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24));
-                        console.log(range)
             
                         if(0 <= range && range <= 7) {
                             showHistory(startDate, endDate);
-                            if (!buttonAdded && dataCount > 0) {
-                                $('#downloadLaporanButton').append('<button class="btn btn-primary" id="downloadBtn">Download Laporan</button>');
-                                buttonAdded = true;
-                            }
 
-                            // Event listener for download button click
-                            $('#downloadBtn').click(function() {
-                                var startDate = document.getElementById('start-date').value;
-                                var endDate = document.getElementById('end-date').value;
-                                
-                                downloadReport(startDate, endDate)
-                                
-                            });
                         } else {
                             document.getElementById('infoSection').className += 'alert alert-danger';
                             document.getElementById('infoSection').textContent = 'Maximum range is a week of report!';
@@ -349,6 +357,6 @@
             
             
     });
-    </script>
+</script>
 
 </html>
