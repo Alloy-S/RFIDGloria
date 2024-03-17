@@ -351,7 +351,7 @@
                         document.getElementById('infoSection').textContent = `Date maximum is current date (${  new Date().toLocaleDateString()})!`;
                     }
                 } else {
-                    if (startDate == '' && endDate == '') {
+                    if (startDate == '' || endDate == '') {
                         document.getElementById('infoSection').className += 'alert alert-warning';
                         document.getElementById('infoSection').textContent = `Input Start Date and End Date!`;
                     } else {
