@@ -22,7 +22,7 @@ if ($stmt->rowCount() > 0) {
     $title = $result['title'];
 } else {
     $currentDayName = date("l");
-    $queryCurrent = "SELECT * FROM sound WHERE title == :title";
+    $queryCurrent = "SELECT * FROM sound WHERE title=:title";
     $stmt = $conn->prepare($queryCurrent);
     $stmt->execute([":title" => $currentDayName]);
     if ($stmt->rowCount() > 0) {

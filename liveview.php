@@ -132,13 +132,7 @@
                 <!-- /.container-fluid -->
 
                 <!-- footer -->
-                <footer class="row col-lg-12 bg-gradient-primary justify-content-center header-footer sticky-bottom" id="footer">
-                    <div class="container">
-                        <div class="copyright text-center my-4">
-                            <span>Copyright &copy; IT PCU 2023</span>
-                        </div>
-                    </div>
-                </footer>
+                <?php include "footer.php" ?>
 
             </div>
             <!-- End of Main Content -->

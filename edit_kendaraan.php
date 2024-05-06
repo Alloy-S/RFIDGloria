@@ -159,13 +159,7 @@ if ($stmt->rowCount() == 0) {
             <!-- End of Main Content  -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; IT PCU 2023</span>
-                    </div>
-                </div>
-            </footer>
+            <?php include "footer.php" ?>
             <!-- End of Footer -->
 
         </div>

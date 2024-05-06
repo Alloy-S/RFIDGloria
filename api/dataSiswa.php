@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     // $hasil = $result->fetchAll(PDO::FETCH_ASSOC);
     // $result = array("data" => $hasil);
     // echo json_encode($result);
-    $url = 'http://localhost:8080/rfid_gloria/RFIDGloria/api/getAllSiswa.php';
+    $url = 'http://localhost/RFIDGloria/api/getAllSiswa.php';
 
     $curl = curl_init($url);
 
