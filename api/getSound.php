@@ -15,27 +15,6 @@ $notTk = array("1", "2", "3", "4", "5", "6", "7", "8", "9");
 $currentDate = date('Y-m-d');
 $currentDayName = date("l");
 
-// $queryCurrent = "SELECT * FROM sound WHERE DATE(date) = :currentDate AND title <> 'default'";
-// $stmt = $conn->prepare($queryCurrent);
-// $stmt->execute([":currentDate" => $currentDate]);
-// $event = false;
-// if ($stmt->rowCount() > 0) {
-//     $event = true;
-//     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-//     $title = $result['title'];
-// } else {
-//     $currentDayName = date("l");
-//     $queryCurrent = "SELECT * FROM sound WHERE title == :title";
-//     $stmt = $conn->prepare($queryCurrent);
-//     $stmt->execute([":title" => $currentDayName]);
-//     if ($stmt->rowCount() > 0) {
-//         $title = $currentDayName;
-//     } else {
-//         $title = "default";
-//     }
-// }
-
-
 // $result_query = "SELECT murid.sound FROM live_view AS live INNER JOIN sound AS murid ON live.murid_id=murid.student_id";
 $result_query = "SELECT murid_id FROM live_view";
 

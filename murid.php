@@ -166,13 +166,7 @@ require("./conn.php");
             <!-- End of Wrapper table  -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; IT PCU 2023</span>
-                    </div>
-                </div>
-            </footer>
+            <?php include "footer.php" ?>
             <!-- End of Footer -->
 
         </div>

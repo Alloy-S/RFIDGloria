@@ -136,13 +136,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; IT PCU 2023</span>
-                    </div>
-                </div>
-            </footer>
+            <?php include "footer.php" ?>
             <!-- End of Footer -->
 
         </div>
@@ -288,7 +282,7 @@
 
             $('.filter a.dropdown-item').on('click', function() {
                 // console.log($(this).text());
-                
+
                 grade = $(this).text().toLowerCase();
                 $("#dropdownFilter").text($(this).text());
                 // console.log(grade);

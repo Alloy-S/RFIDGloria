@@ -2,10 +2,10 @@
 include("../conn.php");
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $limit = 2; 
-    $page = isset($_GET["page"]) ? $_GET["page"] : 1;
-    $grade = isset($_GET["grade"]) ? $_GET["grade"] : 'all';
+    $page = isset($_POST["page"]) ? $_POST["page"] : 1;
+    $grade = isset($_POST["grade"]) ? $_POST["grade"] : 'all';
 
     $sd = array("1", "2", "3", "4", "5", "6");
     $smp = array("7", "8", "9");
