@@ -2,7 +2,7 @@
 include("../conn.php");
 header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $url = 'http://localhost:8080/rfid_gloria/RFIDGloria/api/getAllSiswa.php';
+    $url = 'http://localhost/RFIDGloria/api/getAllSiswa.php';
 
     $curl = curl_init($url);
 

@@ -54,7 +54,6 @@ $result_query .= "LIMIT 3;";
 
 $stmt = $conn->prepare($result_query);
 $stmt->execute();
-
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 

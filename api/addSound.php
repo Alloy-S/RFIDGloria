@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title_sound'];
     $sound = $_POST['suara'];
     $type = $_POST['type'];
-    $file = uniqid('', true) . "" . ".wav";
+    $file = uniqid() . "" . ".wav";
     $text = $sound;
     $text = str_replace(" ", "+", $text);
     $filename = "../sound/" . $file;
