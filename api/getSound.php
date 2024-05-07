@@ -11,55 +11,61 @@ if ($grade == "") {
 }
 $sd = array("1", "2", "3", "4", "5", "6");
 $smp = array("7", "8", "9");
+$notTk = array("1", "2", "3", "4", "5", "6", "7", "8", "9");
 $currentDate = date('Y-m-d');
-$queryCurrent = "SELECT * FROM sound WHERE DATE(date) = :currentDate AND title <> 'default'";
-$stmt = $conn->prepare($queryCurrent);
-$stmt->execute([":currentDate" => $currentDate]);
-$event = false;
-if ($stmt->rowCount() > 0) {
-    $event = true;
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $title = $result['title'];
-} else {
-    $currentDayName = date("l");
-    $queryCurrent = "SELECT * FROM sound WHERE title == :title";
-    $stmt = $conn->prepare($queryCurrent);
-    $stmt->execute([":title" => $currentDayName]);
-    if ($stmt->rowCount() > 0) {
-        $title = $currentDayName;
-    } else {
-        $title = "default";
-    }
-}
+$currentDayName = date("l");
+
+// $queryCurrent = "SELECT * FROM sound WHERE DATE(date) = :currentDate AND title <> 'default'";
+// $stmt = $conn->prepare($queryCurrent);
+// $stmt->execute([":currentDate" => $currentDate]);
+// $event = false;
+// if ($stmt->rowCount() > 0) {
+//     $event = true;
+//     $result = $stmt->fetch(PDO::FETCH_ASSOC);
+//     $title = $result['title'];
+// } else {
+//     $currentDayName = date("l");
+//     $queryCurrent = "SELECT * FROM sound WHERE title == :title";
+//     $stmt = $conn->prepare($queryCurrent);
+//     $stmt->execute([":title" => $currentDayName]);
+//     if ($stmt->rowCount() > 0) {
+//         $title = $currentDayName;
+//     } else {
+//         $title = "default";
+//     }
+// }
 
 
-$result_query = "SELECT murid.sound FROM live_view AS live INNER JOIN sound AS murid ON live.murid_id=murid.student_id";
+// $result_query = "SELECT murid.sound FROM live_view AS live INNER JOIN sound AS murid ON live.murid_id=murid.student_id";
+$result_query = "SELECT murid_id FROM live_view";
 
 
 if ($grade == 'all') {
     $result_query .= "
-        WHERE murid.title = '" . $title . "'
         ORDER BY
-        live.entry_date DESC
-    ;";
+        entry_date DESC
+    ";
 } else {
     if ($grade == 'sd') {
+        $grades = implode(',', $sd); // Convert array to comma-separated string
         $result_query .= "
-            AND ((live.grade IN (" . implode(',', $sd) . ")) AND (murid.title = '" . $title . "'))
+            WHERE grade IN ($grades) 
             ORDER BY
-            live.entry_date DESC
+            entry_date DESC
         ";
     } elseif ($grade == 'smp') {
+        $grades = implode(',', $smp); // Convert array to comma-separated string
         $result_query .= "
-            AND ((live.grade IN (" . implode(',', $smp) . ")) AND (murid.title = '" . $title . "'))
+            WHERE grade IN ($grades) 
             ORDER BY
-            live.entry_date DESC
+            entry_date DESC
         ";
     } else {
+        $grades = implode(',', $notTk); // Convert array to comma-separated string
         $result_query .= "
-            AND ((live.grade NOT IN (" . implode(',', $sd) . ")) AND (live.grade NOT IN (" . implode(',', $smp) . ")) AND (murid.title = '" . $title . "'))
+            WHERE grade NOT IN ($grades) 
             ORDER BY
-            live.entry_date DESC
+            entry_date DESC
         ";
     }
 }
@@ -76,7 +82,55 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $sound = [];
 foreach ($result as $row) {
     // $sound = $row['sound'];
-    array_push($sound, $row['sound']);
+    // $query = "SELECT sound FROM sound WHERE student_id = :student_id AND title <> 'default' AND title <> :current_day AND DATE(date) = :currentDate";
+    // $stmt = $conn->prepare($query);
+    // $stmt->execute([':student_id' => $row['murid_id'], ':current_day' => $currentDayName, ":currentDate" => $currentDate]);
+    // if ($stmt->rowCount() > 0) {
+    //     $rowSound = $stmt->fetch(PDO::FETCH_ASSOC);
+    //     array_push($sound, $rowSound['sound']);
+    // } else {
+    //     $query = "SELECT sound FROM sound WHERE student_id = :student_id AND  title = :current_day";
+    //     $stmt = $conn->prepare($query);
+    //     $stmt->execute([':student_id' => $row['murid_id'], ':current_day' => $currentDayName]);
+    //     if ($stmt->rowCount() > 0) {
+    //         $rowSound = $stmt->fetch(PDO::FETCH_ASSOC);
+    //         array_push($sound, $rowSound['sound']);
+    //     } else {
+    //         $query = "SELECT sound FROM sound WHERE student_id = :student_id AND  title = 'default'";
+    //         $stmt = $conn->prepare($query);
+    //         $stmt->execute([':student_id' => $row['murid_id']]);
+    //         $rowSound = $stmt->fetch(PDO::FETCH_ASSOC);
+    //         array_push($sound, $rowSound['sound']);
+    //     }
+    // }
+    $query = "SELECT 
+            CASE 
+                WHEN title <> 'default' AND title <> :current_day AND DATE(date) = :currentDate THEN sound 
+                WHEN title = :current_day THEN sound 
+                ELSE (SELECT sound FROM sound WHERE student_id = :student_id AND title = 'default') 
+            END AS sound 
+          FROM sound 
+          WHERE student_id = :student_id 
+          AND (title <> 'default' OR title = :current_day OR title = 'default') 
+          ORDER BY 
+            CASE 
+                WHEN title <> 'default' AND title <> :current_day AND DATE(date) = :currentDate THEN 1 
+                WHEN title = :current_day THEN 2 
+                ELSE 3 
+            END 
+          LIMIT 1";
+
+    $stmt = $conn->prepare($query);
+    $stmt->execute([
+        ':student_id' => $row['murid_id'],
+        ':current_day' => $currentDayName,
+        ':currentDate' => $currentDate
+    ]);
+
+    $rowSound = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($rowSound) {
+        array_push($sound, $rowSound['sound']);
+    }
 }
 $data["status"] = "ok";
 $data["grade"] = $grade;
