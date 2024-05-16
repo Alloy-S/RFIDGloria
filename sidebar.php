@@ -1,6 +1,6 @@
 <script src="vendor/jquery/jquery.min.js"></script>
 
-<div style="z-index: 1;">
+<div style="">
   <!-- Sidebar -->
   <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <!-- Sidebar - Brand -->

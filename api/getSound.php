@@ -16,40 +16,42 @@ $currentDate = date('Y-m-d');
 $currentDayName = date("l");
 
 // $result_query = "SELECT murid.sound FROM live_view AS live INNER JOIN sound AS murid ON live.murid_id=murid.student_id";
-$result_query = "SELECT murid_id FROM live_view";
+$result_query = "SELECT a.murid_id FROM live_view as a JOIN jam_operasional AS e
+ON TIME(CURRENT_TIMESTAMP) BETWEEN e.`jam awal` AND e.`jam akhir`
+AND TIME(a.entry_date) BETWEEN e.`jam awal` AND e.`jam akhir`";
 
 
 if ($grade == 'all') {
     $result_query .= "
         ORDER BY
-        entry_date DESC
+        a.entry_date DESC
     ";
 } else {
     if ($grade == 'sd') {
         $grades = implode(',', $sd); // Convert array to comma-separated string
         $result_query .= "
-            WHERE grade IN ($grades) 
+            WHERE a.grade IN ($grades) 
             ORDER BY
-            entry_date DESC
+            a.entry_date DESC
         ";
     } elseif ($grade == 'smp') {
         $grades = implode(',', $smp); // Convert array to comma-separated string
         $result_query .= "
-            WHERE grade IN ($grades) 
+            WHERE a.grade IN ($grades) 
             ORDER BY
-            entry_date DESC
+            a.entry_date DESC
         ";
     } else {
         $grades = implode(',', $notTk); // Convert array to comma-separated string
         $result_query .= "
-            WHERE grade NOT IN ($grades) 
+            WHERE a.grade NOT IN ($grades) 
             ORDER BY
-            entry_date DESC
+            a.entry_date DESC
         ";
     }
 }
 
-$result_query .= "LIMIT 3;";
+$result_query .= " LIMIT 3;";
 
 
 $stmt = $conn->prepare($result_query);
