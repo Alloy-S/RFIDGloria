@@ -104,9 +104,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     $data['pesan'] = "Id murid " . $row_murid . " tidak ditemukan!!";
                     die(json_encode($data));
                 }
-                $file = uniqid('', true) . "" . ".wav";
+                $file = uniqid() . "" . ".wav";
                 $kelas = $stmt_cek->fetch(PDO::FETCH_ASSOC);
-                $text = "siswa " . $row_murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
+                $text = "siswa " . $kelas['name'] . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
@@ -144,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 $data['pesan'] = "Size image maximal 5MB!!";
                 die(json_encode($data));
             }
-            $namabukti = $plat . "_" . uniqid('', true) . "." . strtolower(end($namaFile));
+            $namabukti = $plat . "_" . uniqid() . "." . strtolower(end($namaFile));
             $fileDestination = "../upload_foto/" . $namabukti;
             if (!(move_uploaded_file($penyimpananFile, $fileDestination))) {
                 $data['pesan'] = "Maaf ada kesalahan, silahkan tunggu beberapa saat";
@@ -159,9 +159,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     $data['pesan'] = "Id murid " . $row_murid . " tidak ditemukan!!";
                     die(json_encode($data));
                 }
-                $file = uniqid('', true) . "" . ".wav";
+                $file = uniqid() . "" . ".wav";
                 $kelas = $stmt_cek->fetch(PDO::FETCH_ASSOC);
-                $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
+                $text = "siswa " . $kelas['name'] . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
@@ -206,9 +206,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     $data['pesan'] = "Id murid tidak ditemukan!!";
                     die(json_encode($data));
                 }
-                $file = uniqid('', true) . "" . ".wav";
+                $file = uniqid() . "" . ".wav";
                 $kelas = $stmt_cek->fetch(PDO::FETCH_ASSOC);
-                $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
+                $text = "siswa " . $kelas['name'] . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
@@ -254,9 +254,9 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     $data['pesan'] = "Id murid tidak ditemukan!!";
                     die(json_encode($data));
                 }
-                $file = uniqid('', true) . "" . ".wav";
+                $file = uniqid() . "" . ".wav";
                 $kelas = $stmt_cek->fetch(PDO::FETCH_ASSOC);
-                $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
+                $text = "siswa " . $kelas['name'] . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;

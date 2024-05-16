@@ -119,9 +119,9 @@ $stmt->execute([":newUID" => "", ":id" => 1]);
                         <label for="rfid_tag" class="form-label">Car RFID Tag</label>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" id="rfid_tag" name="rfid">
-                            <!-- <div class="input-group-append">
+                            <div class="input-group-append">
                                 <button class="btn btn-primary" type="button" id="scanRfid1" data-toggle="modal" data-target="#rfidModal">Scan</button>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                     <!-- <div class="col-12 mb-3">
