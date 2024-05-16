@@ -99,7 +99,8 @@
     <li class="nav-item">
       <a class="nav-link" id="editJam">
         <i class="fas fa-fw fa-clock"></i>
-        <span>Ubah Jam</span></a>
+        <span>Ubah Jam</span>
+      </a>
     </li>
 
     <!-- Divider -->
@@ -158,6 +159,7 @@
   btnEdit.addEventListener("click", () => {
     $("#exampleModal").modal("show");
   });
+
   $(document).ready(function() {
     $("#submit-jam").on("submit", function(e) {
       e.preventDefault();

@@ -61,8 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     die(json_encode($data));
                 }
                 $kelas = $stmt_cek->fetch(PDO::FETCH_ASSOC);
-                $file = uniqid('', true) . "" . ".wav";
-                $text = "siswa " . $row_murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
+                $file = uniqid() . "" . ".wav";
+                $text = "siswa " . $kelas['name'] . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap-siap";
                 $text = str_replace(" ", "+", $text);
                 $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
                 $filename = "../sound/" . $file;
@@ -104,8 +104,8 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 die(json_encode($data));
             }
             $kelas = $stmt_cek->fetch(PDO::FETCH_ASSOC);
-            $file = uniqid('', true) . "" . ".wav";
-            $text = "siswa " . $murid . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap di lobby utara.";
+            $file = uniqid() . "" . ".wav";
+            $text = "siswa " . $kelas['name'] . " kelas " . $kelas['grade'] . $kelas['class'] . " telah di jemput. harap bersiap-siap";
             $text = str_replace(" ", "+", $text);
             $current = file_get_contents("https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&q=" . $text . "&tl=id-ID");
             $filename = "../sound/" . $file;
