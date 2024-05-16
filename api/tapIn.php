@@ -5,17 +5,17 @@ include("./sendMessage.php");
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // $uid = array("50:b7:e4:a4:", "ghjkgfaukgf", "coba", "d2:8e:50:96:");
     // $randomUID = $uid[array_rand($uid)];
-    $stmt = $conn->prepare("SELECT * FROM jam_operasional");
-    $stmt->execute();
-    $hasil = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $stmt = $conn->prepare("SELECT * FROM jam_operasional");
+    // $stmt->execute();
+    // $hasil = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // echo "Randomly chosen UID: $randomUID\n";
-    date_default_timezone_set('Asia/Jakarta');
-    $currentLocalTime = date('H:i:s');
-    $time1 = array($hasil[0]["jam awal"], $hasil[0]["jam akhir"]);
-    $time2 = array($hasil[1]["jam awal"], $hasil[1]["jam akhir"]);
-    $time3 = array($hasil[2]["jam awal"], $hasil[2]["jam akhir"]);
-    $time4 = array($hasil[3]["jam awal"], $hasil[3]["jam akhir"]);
+    // date_default_timezone_set('Asia/Jakarta');
+    // $currentLocalTime = date('H:i:s');
+    // $time1 = array($hasil[0]["jam awal"], $hasil[0]["jam akhir"]);
+    // $time2 = array($hasil[1]["jam awal"], $hasil[1]["jam akhir"]);
+    // $time3 = array($hasil[2]["jam awal"], $hasil[2]["jam akhir"]);
+    // $time4 = array($hasil[3]["jam awal"], $hasil[3]["jam akhir"]);
     // echo "Current local time: $currentLocalTime\n";
 
     $uid = $_POST["uid"];
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                         $stmt->execute([":uid" => $uid, ":murid_id" => $murid_id, ":class" => $class, ":grade" => $grade, ":name" => $name, ":studentRfid" => $studentRfid]);
                         // echo "Success add to table";
                         array_push($count, $murid_id);
-                        
+
                         // echo json_encode(array('class' => $class, 'name' => $name));
                     }
                 }
@@ -103,4 +103,3 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 }
 $data["error"] = "HARUS MENGGUNAKAN POST";
 echo json_encode($data);
-

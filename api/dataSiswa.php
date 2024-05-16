@@ -2,6 +2,11 @@
 include("../conn.php");
 header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        echo json_encode(array('error' => 'This endpoint can only be accessed via AJAX'));
+        exit;
+    }
+    $url = 'http://localhost:8080/rfid_gloria/RFIDGloria/api/getAllSiswa.php';
     $url = 'http://localhost/RFIDGloria/api/getAllSiswa.php';
 
     $curl = curl_init($url);
