@@ -1,7 +1,11 @@
 <?php
 include("../conn.php");
 include("./sendMessage.php");
+header('Access-Control-Allow-Origin: *');  
+header('Access-Control-Allow-Methods: *'); 
+header('Access-Control-Allow-Headers: Content-Type');
 // echo $_SERVER["REQUEST_METHOD"]; 
+$data = json_decode(file_get_contents("php://input"), true);
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // $uid = array("50:b7:e4:a4:", "ghjkgfaukgf", "coba", "d2:8e:50:96:");
     // $randomUID = $uid[array_rand($uid)];
@@ -18,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     // $time4 = array($hasil[3]["jam awal"], $hasil[3]["jam akhir"]);
     // echo "Current local time: $currentLocalTime\n";
 
-    $uid = $_POST["uid"];
+    $uid = $data["uid"];
     // $uid = "50:b7:e4:a4:";
     $stmt = $conn->prepare("SELECT b.id_murid from db_kendaraan AS a JOIN murid_to_kendaraan AS b ON a.id = b.id_kendaraan WHERE a.rfid_tag = :id");
     $stmt->execute([":id" => $uid]);
